@@ -23,3 +23,15 @@ fn tuple_with_w_0_is_a_vector() {
     assert!(!t.is_point());
     assert!(t.is_vector());
 }
+
+#[test]
+fn create_point() {
+    let p = Tuple::point(1.0, 2.0, 3.0);
+    assert_eq!(p, Tuple::new(1.0, 2.0, 3.0, 1.0));
+}
+
+#[test]
+fn create_vector() {
+    let v = Tuple::vector(4.0, 5.0, 6.0);
+    assert_eq!(v, Tuple::new(4.0, 5.0, 6.0, 0.0));
+}

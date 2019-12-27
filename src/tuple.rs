@@ -1,6 +1,7 @@
 // Provides a 4 element tuple structure for representing
 // points and vectors.
 //
+#[derive(Debug, PartialEq)]
 pub struct Tuple {
     pub x: f64,
     pub y: f64,
@@ -12,6 +13,16 @@ impl Tuple {
     // Creates a new tuple from 4 elements.
     pub fn new(x: f64, y: f64, z: f64, w: f64) -> Tuple {
         Tuple { x, y, z, w }
+    }
+
+    // Creates a new point
+    pub fn point(x: f64, y: f64, z: f64) -> Tuple {
+        Self::new(x, y, z, 1.0)
+    }
+
+    // Creates a new vector
+    pub fn vector(x: f64, y: f64, z: f64) -> Tuple {
+        Self::new(x, y, z, 0.0)
     }
 
     // Checks whether a tuple is a point or not.
