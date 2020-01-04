@@ -17,6 +17,18 @@ impl Vector {
         Vector::new(x as f64, y as f64, z as f64)
     }
 
+    pub fn cross(&self, v: Vector) -> Vector {
+        Vector {
+            x: self.y * v.z - self.z * v.y,
+            y: self.z * v.x - self.x * v.z,
+            z: self.x * v.y - self.y * v.x
+        }
+    }
+
+    pub fn dot(&self, v: Vector) -> f64 {
+        self.x * v.x + self.y * v.y + self.z * v.z
+    }
+
     pub fn magnitude(&self) -> f64 {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
@@ -183,6 +195,21 @@ mod test {
     fn normalize_vector() {
         let expected = Vector::new(1_f64 / 14_f64.sqrt(), 2_f64 / 14_f64.sqrt(), 3_f64 / 14_f64.sqrt());
         assert_eq!(expected, Vector::n(1, 2, 3).normalize())
+    }
+
+    #[test]
+    fn dot_product() {
+        let a = Vector::n(1, 2, 3);
+        let b = Vector::n(2, 3, 4);
+        assert_eq!(20.0, a.dot(b));
+    }
+
+    #[test]
+    fn cross_product() {
+        let a = Vector::n(1, 2, 3);
+        let b = Vector::n(2, 3, 4);
+        assert_eq!(Vector::n(-1, 2, -1), a.cross(b));
+        assert_eq!(Vector::n(1, -2, 1), b.cross(a))
     }
 }
 
