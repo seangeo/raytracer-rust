@@ -62,6 +62,18 @@ impl std::ops::Mul<f64> for Vector {
     }
 }
 
+impl std::ops::Div<f64> for Vector {
+    type Output = Vector;
+
+    fn div(self, s: f64) -> Vector {
+        Vector {
+            x: self.x / s,
+            y: self.y / s,
+            z: self.z / s
+        }
+    }
+}
+
 impl std::ops::Mul<i64> for Vector {
     type Output = Vector;
 
@@ -111,6 +123,12 @@ mod test {
     fn can_multiply_a_vector_by_a_scalar_integer() {
         let v = Vector::new(1.0, -2.0, 3.0);
         assert_eq!(Vector::new(-2.0, 4.0, -6.0), v * -2);
+    }
+
+    #[test]
+    fn can_divide_by_scalar() {
+        let v = Vector::new(1.0, -2.0, 3.0);
+        assert_eq!(Vector::new(0.5, -1.0, 1.5), v / 2.0)
     }
 }
 
