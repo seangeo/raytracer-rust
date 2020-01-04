@@ -50,6 +50,26 @@ impl std::ops::Sub<Vector> for Vector {
     }
 }
 
+impl std::ops::Mul<f64> for Vector {
+    type Output = Vector;
+
+    fn mul(self, s: f64) -> Vector {
+        Vector {
+            x: self.x * s,
+            y: self.y * s,
+            z: self.z * s
+        }
+    }
+}
+
+impl std::ops::Mul<i64> for Vector {
+    type Output = Vector;
+
+    fn mul(self, s: i64) -> Vector {
+        self * s as f64
+    }
+}
+
 impl std::ops::Neg for Vector {
     type Output = Vector;
 
@@ -79,6 +99,18 @@ mod test {
         let v = Vector::new(1.0, -2.0, 3.0);
         let zero = Vector::new(0.0, 0.0, 0.0);
         assert_eq!(zero - v, -v)
+    }
+
+    #[test]
+    fn can_multiply_a_vector_by_a_scalar() {
+        let v = Vector::new(1.0, -2.0, 3.0);
+        assert_eq!(Vector::new(3.5, -7.0, 10.5), v * 3.5);
+    }
+
+    #[test]
+    fn can_multiply_a_vector_by_a_scalar_integer() {
+        let v = Vector::new(1.0, -2.0, 3.0);
+        assert_eq!(Vector::new(-2.0, 4.0, -6.0), v * -2);
     }
 }
 
