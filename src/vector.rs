@@ -50,6 +50,18 @@ impl std::ops::Sub<Vector> for Vector {
     }
 }
 
+impl std::ops::Neg for Vector {
+    type Output = Vector;
+
+    fn neg(self) -> Vector {
+        Vector {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -60,6 +72,13 @@ mod test {
         assert_eq!(t.x, 4.3);
         assert_eq!(t.y, -4.2);
         assert_eq!(t.z, 3.1);
+    }
+
+    #[test]
+    fn can_negate_a_vector() {
+        let v = Vector::new(1.0, -2.0, 3.0);
+        let zero = Vector::new(0.0, 0.0, 0.0);
+        assert_eq!(zero - v, -v)
     }
 }
 
