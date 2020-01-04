@@ -5,10 +5,6 @@ pub struct Color {
     pub b: f64
 }
 
-pub fn color(r: f64, g: f64, b: f64) -> Color {
-    Color { r, g, b }
-}
-
 impl std::ops::Add for Color {
     type Output = Color;
 
@@ -21,9 +17,25 @@ impl std::ops::Add for Color {
     }
 }
 
+impl std::ops::Sub for Color {
+    type Output = Color;
+
+    fn sub(self, c: Color) -> Color {
+        Color {
+            r: self.r - c.r,
+            g: self.g - c.g,
+            b: self.b - c.b
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn color(r: f64, g: f64, b: f64) -> Color {
+        Color { r, g, b }
+    }
 
     #[test]
     fn create_a_color() {
@@ -38,5 +50,12 @@ mod tests {
         let c1 = color(0.9, 0.6, 0.75);
         let c2 = color(0.7, 0.1, 0.25);
         assert_eq!(color(1.6, 0.7, 1.0), c1 + c2)
+    }
+
+    #[test]
+    fn subtracting_colors() {
+        let c1 = color(0.95, 0.6, 0.75);
+        let c2 = color(0.7, 0.1, 0.25);
+        assert_eq!(color(0.25, 0.5, 0.5), c1 - c2)
     }
 }
