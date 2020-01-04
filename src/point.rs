@@ -26,6 +26,30 @@ impl std::ops::Add<Vector> for Point {
     }
 }
 
+impl std::ops::Sub<Point> for Point {
+    type Output = Vector;
+
+    fn sub(self, p: Point) -> Vector {
+        Vector {
+            x: self.x - p.x,
+            y: self.y - p.y,
+            z: self.z - p.z
+        }
+    }
+}
+
+impl std::ops::Sub<Vector> for Point {
+    type Output = Point;
+
+    fn sub(self, p: Vector) -> Point {
+        Point {
+            x: self.x - p.x,
+            y: self.y - p.y,
+            z: self.z - p.z
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

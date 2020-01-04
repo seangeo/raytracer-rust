@@ -38,6 +38,18 @@ impl std::ops::Add<Vector> for Vector {
     }
 }
 
+impl std::ops::Sub<Vector> for Vector {
+    type Output = Vector;
+
+    fn sub(self, v: Vector) -> Vector {
+        Vector {
+            x: self.x - v.x,
+            y: self.y - v.y,
+            z: self.z - v.z
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
