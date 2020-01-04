@@ -20,6 +20,16 @@ impl Vector {
     pub fn magnitude(&self) -> f64 {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
+
+    pub fn normalize(&self) -> Vector {
+        let m = self.magnitude();
+
+        Vector {
+            x: self.x / m,
+            y: self.y / m,
+            z: self.z / m
+        }
+    }
 }
 
 impl std::ops::Add<Point> for Vector {
@@ -162,6 +172,17 @@ mod test {
     #[test]
     fn compute_magnitude_of_negative_vector() {
         assert_eq!(14.0_f64.sqrt(), Vector::n(-1, -2, -3).magnitude())
+    }
+
+    #[test]
+    fn normalize_vector_on_one_axis() {
+        assert_eq!(Vector::n(1, 0, 0), Vector::n(4, 0, 0).normalize())
+    }
+
+    #[test]
+    fn normalize_vector() {
+        let expected = Vector::new(1_f64 / 14_f64.sqrt(), 2_f64 / 14_f64.sqrt(), 3_f64 / 14_f64.sqrt());
+        assert_eq!(expected, Vector::n(1, 2, 3).normalize())
     }
 }
 
