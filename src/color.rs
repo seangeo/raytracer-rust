@@ -1,8 +1,22 @@
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Color {
     pub r: f64,
     pub g: f64,
     pub b: f64
+}
+
+impl Color {
+    pub fn new(r: f64, g: f64, b: f64) -> Color {
+        Color { r, g, b }
+    }
+
+    pub fn black() -> Color {
+        Color {
+            r: 0.0,
+            g: 0.0,
+            b: 0.0
+        }
+    }
 }
 
 impl std::ops::Add for Color {
