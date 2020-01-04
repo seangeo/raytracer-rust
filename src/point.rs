@@ -1,3 +1,6 @@
+use crate::vector::Vector;
+
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Point {
     pub x: f64,
     pub y: f64,
@@ -8,6 +11,18 @@ impl Point {
     // Creates a new vector from 3 elements.
     pub fn new(x: f64, y: f64, z: f64) -> Point {
         Point { x, y, z }
+    }
+}
+
+impl std::ops::Add<Vector> for Point {
+    type Output = Point;
+
+    fn add(self, v: Vector) -> Point {
+        Point{
+            x: self.x + v.x,
+            y: self.y + v.y,
+            z: self.z + v.z
+        }
     }
 }
 
