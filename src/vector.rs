@@ -12,6 +12,14 @@ impl Vector {
     pub fn new(x: f64, y: f64, z: f64) -> Vector {
         Vector { x, y, z }
     }
+
+    pub fn n(x: i64, y: i64, z: i64) -> Vector {
+        Vector::new(x as f64, y as f64, z as f64)
+    }
+
+    pub fn magnitude(&self) -> f64 {
+        (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
+    }
 }
 
 impl std::ops::Add<Point> for Vector {
@@ -110,7 +118,7 @@ mod test {
     fn can_negate_a_vector() {
         let v = Vector::new(1.0, -2.0, 3.0);
         let zero = Vector::new(0.0, 0.0, 0.0);
-        assert_eq!(zero - v, -v)
+        assert_eq!(zero - v, -v);
     }
 
     #[test]
@@ -129,6 +137,31 @@ mod test {
     fn can_divide_by_scalar() {
         let v = Vector::new(1.0, -2.0, 3.0);
         assert_eq!(Vector::new(0.5, -1.0, 1.5), v / 2.0)
+    }
+
+    #[test]
+    fn compute_magnitude_of_unit_on_x() {
+        assert_eq!(1.0, Vector::n(1, 0, 0).magnitude())
+    }
+
+    #[test]
+    fn compute_magnitude_of_unit_on_y() {
+        assert_eq!(1.0, Vector::n(0, 1, 0).magnitude())
+    }
+
+    #[test]
+    fn compute_magnitude_of_unit_on_z() {
+        assert_eq!(1.0, Vector::n(0, 0, 1).magnitude())
+    }
+
+    #[test]
+    fn compute_magnitude_of_positive_vector() {
+        assert_eq!(14.0_f64.sqrt(), Vector::n(1, 2, 3).magnitude())
+    }
+
+    #[test]
+    fn compute_magnitude_of_negative_vector() {
+        assert_eq!(14.0_f64.sqrt(), Vector::n(-1, -2, -3).magnitude())
     }
 }
 
