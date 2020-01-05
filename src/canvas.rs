@@ -25,18 +25,21 @@ impl Canvas {
 
     pub fn to_ppm(&self, out: & mut dyn std::io::Write) -> std::io::Result<()> {
         let last = self.pixels.last().unwrap();
+        let mut count = 0;
 
         write!(out, "P3\n{} {}\n255\n", self.width, self.height)?;
 
         for pixel in self.into_iter() {
             match Self::write_pixel(pixel, out) {
-                Ok(_) => if !std::ptr::eq(pixel, last) {
-                    println!("last!!");
+                Ok(_) => if std::ptr::eq(pixel, last) || count % 20 == 0 {
+                    write!(out, "\n")?;
+                } else {
                     write!(out, " ")?;
                 },
                 e => return e
             }
 
+            count += 1;
         }
 
         std::io::Result::Ok(())
@@ -118,6 +121,6 @@ mod tests {
 
         let s = String::from_utf8(io).unwrap();
 
-        assert_eq!("P3\n2 2\n255\n255 255 255 0 0 0 0 0 0 0 0 0", s)
+        assert_eq!("P3\n2 2\n255\n255 255 255\n0 0 0 0 0 0 0 0 0\n", s)
     }
 }
