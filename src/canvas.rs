@@ -22,6 +22,33 @@ impl Canvas {
     pub fn set(&mut self, x: usize, y: usize, c: Color) {
         self.pixels[y * self.width + x] = c
     }
+
+    pub fn to_ppm(&self, out: & mut dyn std::io::Write) -> std::io::Result<()> {
+        let last = self.pixels.last().unwrap();
+
+        write!(out, "P3\n{} {}\n255\n", self.width, self.height)?;
+
+        for pixel in self.into_iter() {
+            match Self::write_pixel(pixel, out) {
+                Ok(_) => if !std::ptr::eq(pixel, last) {
+                    println!("last!!");
+                    write!(out, " ")?;
+                },
+                e => return e
+            }
+
+        }
+
+        std::io::Result::Ok(())
+    }
+
+    fn write_pixel(pixel: &Color, out: & mut dyn std::io::Write) -> std::io::Result<()> {
+        let r = pixel.r.max(0.0).min(1.0) as i64 * 255;
+        let g = pixel.g.max(0.0).min(1.0) as i64 * 255;
+        let b = pixel.b.max(0.0).min(1.0) as i64 * 255;
+
+        write!(out, "{} {} {}", r, g, b)
+    }
 }
 
 impl IntoIterator for Canvas {
@@ -30,6 +57,15 @@ impl IntoIterator for Canvas {
 
     fn into_iter(self) -> Self::IntoIter {
         self.pixels.into_iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a Canvas {
+    type Item = &'a Color;
+    type IntoIter = std::slice::Iter<'a, Color>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.pixels.iter()
     }
 }
 
@@ -70,5 +106,18 @@ mod tests {
     fn setting_a_pixel_value_out_of_bounds() {
         let mut c = Canvas::new(20, 10);
         c.set(20, 9, Color::new(1.0, 1.0, 1.0));
+    }
+
+    #[test]
+    fn write_ppm() {
+        let mut c = Canvas::new(2, 2);
+        c.set(0, 0, Color::new(1.0, 1.0, 1.0));
+
+        let mut io: Vec<u8> = Vec::new();
+        c.to_ppm(&mut io).unwrap();
+
+        let s = String::from_utf8(io).unwrap();
+
+        assert_eq!("P3\n2 2\n255\n255 255 255 0 0 0 0 0 0 0 0 0", s)
     }
 }
