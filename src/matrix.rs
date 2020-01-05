@@ -25,6 +25,21 @@ impl Matrix {
     }
 }
 
+impl std::cmp::PartialEq<Matrix> for Matrix {
+    fn eq(&self, o: &Matrix) -> bool {
+        const EPSILON: f64 = 0.0001;
+
+        if self.size != o.size {
+            return false
+        } else {
+            self.elements.
+                iter().
+                zip(o.elements.iter()).
+                all(|(&x, &y)| (x - y).abs() < EPSILON)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -66,5 +81,26 @@ mod tests {
     #[should_panic]
     fn fails_if_elements_arent_square() {
         Matrix::from_elements(&vec![1.0, 2.0]);
+    }
+
+    #[test]
+    fn comparing_equal_matrices() {
+        let m1 = Matrix::from_elements(&vec![1.0, 2.0, 3.0, 4.0]);
+        let m2 = Matrix::from_elements(&vec![1.0, 2.0, 3.0, 4.0]);
+        assert_eq!(m1, m2)
+    }
+
+    #[test]
+    fn comparing_nonequal_matrices() {
+        let m1 = Matrix::from_elements(&vec![1.0, 2.0, 3.0, 4.0]);
+        let m2 = Matrix::from_elements(&vec![1.0, 2.0, 3.0, 5.0]);
+        assert_ne!(m1, m2)
+    }
+
+    #[test]
+    fn comparing_nearly_equal_matrices() {
+        let m1 = Matrix::from_elements(&vec![1.0, 2.0, 3.0, 4.0]);
+        let m2 = Matrix::from_elements(&vec![1.0, 2.0, 3.0, 4.0001]);
+        assert_eq!(m1, m2)
     }
 }
