@@ -53,7 +53,6 @@ impl Matrix {
 
 fn dot(a: &[f64], b: &[f64]) -> f64 {
     a.iter().zip(b).map(|(&a, &b)| a * b).sum()
-
 }
 
 impl std::cmp::PartialEq<Matrix> for Matrix {
@@ -75,6 +74,10 @@ impl std::ops::Mul for Matrix {
     type Output = Matrix;
 
     fn mul(self, m: Matrix) -> Matrix {
+        if self.size != m.size {
+            panic!("Cannot multiple matrix of size {} with size {}", self.size,  m.size);
+        }
+
         let mut result: Vec<f64> = Vec::new();
 
         for i in 0..self.size {
@@ -164,9 +167,13 @@ mod tests {
         assert_eq!(result, m1 * m2);
     }
 
-    // #[test]
-    // #[should_panic]
-    // fn multiplying_different_sized_matrices_fails() {
-
-    // }
+    #[test]
+    #[should_panic]
+    fn multiplying_different_sized_matrices_fails() {
+        let m3v = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let m4v = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ,14 ,15, 16];
+        let m3 = Matrix::from_elementsi(&m3v);
+        let m4 = Matrix::from_elementsi(&m4v);
+        let _ = m3 * m4;
+    }
 }
