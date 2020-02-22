@@ -5,12 +5,21 @@
 use crate::point::Point;
 use crate::vector::Vector;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Matrix4x4 {
     elements: [[f64; 4]; 4]
 }
 
 impl Matrix4x4 {
+    pub fn identity() -> Matrix4x4 {
+        Matrix4x4::from_elementsi([
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]
+        ])
+    }
+
     pub fn from_elements(elements: [[f64; 4]; 4]) -> Matrix4x4 {
         Matrix4x4 {
             elements: elements
@@ -213,6 +222,23 @@ mod tests {
         let result = Matrix4x4::from_elementsi(resultv);
 
         assert_eq!(result, m1 * m2);
+    }
+
+    #[test]
+    fn multiplying_a_matrix_by_the_identity_matrix_returns_itself() {
+        let m = Matrix4x4::from_elementsi( [
+            [0, 1, 2, 4],
+            [1, 2, 4, 8],
+            [2, 4, 8, 16],
+            [4, 8, 16, 32]
+        ]);
+        assert_eq!(m, m * Matrix4x4::identity())
+    }
+
+    #[test]
+    fn multiplying_point_by_identity_returns_the_point() {
+        let p = Point::new(1.0, 2.0, 3.0);
+        assert_eq!(p, Matrix4x4::identity() * p)
     }
 
     #[test]
