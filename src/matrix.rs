@@ -53,6 +53,17 @@ impl Matrix4x4 {
             self.get(3, j)
         ]
     }
+
+    pub fn transpose(&self) -> Matrix4x4 {
+        Matrix4x4{
+            elements: [
+                [self.get(0, 0), self.get(1, 0), self.get(2, 0), self.get(3, 0)],
+                [self.get(0, 1), self.get(1, 1), self.get(2, 1), self.get(3, 1)],
+                [self.get(0, 2), self.get(1, 2), self.get(2, 2), self.get(3, 2)],
+                [self.get(0, 3), self.get(1, 3), self.get(2, 3), self.get(3, 3)]
+            ]
+        }
+    }
 }
 
 fn dot(a: &[f64], b: &[f64]) -> f64 {
@@ -239,6 +250,29 @@ mod tests {
     fn multiplying_point_by_identity_returns_the_point() {
         let p = Point::new(1.0, 2.0, 3.0);
         assert_eq!(p, Matrix4x4::identity() * p)
+    }
+
+    #[test]
+    fn transposing_a_matrix() {
+        let m = Matrix4x4::from_elementsi([
+            [0,9,3,0],
+            [9,8,0,8],
+            [1,8,5,3],
+            [0,0,5,8]
+        ]);
+        let transposed = Matrix4x4::from_elementsi([
+            [0,9,1,0],
+            [9,8,8,0],
+            [3,0,5,5],
+            [0,8,3,8]
+        ]);
+
+        assert_eq!(transposed, m.transpose());
+    }
+
+    #[test]
+    fn transposing_identity() {
+        assert_eq!(Matrix4x4::identity(), Matrix4x4::identity().transpose())
     }
 
     #[test]
