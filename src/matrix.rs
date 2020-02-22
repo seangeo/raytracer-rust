@@ -5,6 +5,18 @@
 use crate::point::Point;
 use crate::vector::Vector;
 
+#[derive(Debug)]
+struct Matrix2x2 {
+    elements: [[f64; 2]; 2]
+}
+
+impl Matrix2x2 {
+    fn determinant(&self) -> f64 {
+        (self.elements[0][0] * self.elements[1][1])
+            - (self.elements[0][1] * self.elements[1][0])
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 pub struct Matrix4x4 {
     elements: [[f64; 4]; 4]
@@ -299,5 +311,11 @@ mod tests {
         ]);
         let result = Vector::new(14.0, 22.0, 32.0);
         assert_eq!(result, m * p);
+    }
+
+    #[test]
+    fn determinant_of_2x2() {
+        let m = Matrix2x2{elements: [[1.0, 5.0], [-3.0, 2.0]]};
+        assert_eq!(17.0, m.determinant())
     }
 }
