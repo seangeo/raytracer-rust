@@ -5,7 +5,7 @@
 use crate::point::Point;
 use crate::vector::Vector;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct Matrix2x2 {
     elements: [[f64; 2]; 2]
 }
@@ -14,6 +14,44 @@ impl Matrix2x2 {
     fn determinant(&self) -> f64 {
         (self.elements[0][0] * self.elements[1][1])
             - (self.elements[0][1] * self.elements[1][0])
+    }
+}
+
+#[derive(Debug, PartialEq)]
+struct Matrix3x3 {
+    elements: [[f64; 3]; 3]
+}
+
+impl Matrix3x3 {
+    pub fn from_elements(elements: [[f64; 3]; 3]) -> Matrix3x3 {
+        Matrix3x3 {
+            elements: elements
+        }
+    }
+
+    pub fn from_elementsi(elements: [[i64; 3]; 3]) -> Matrix3x3 {
+        Matrix3x3::from_elements(
+            [
+                [elements[0][0] as f64, elements[0][1] as f64, elements[0][2] as f64],
+                [elements[1][0] as f64, elements[1][1] as f64, elements[1][2] as f64],
+                [elements[2][0] as f64, elements[2][1] as f64, elements[2][2] as f64]
+            ]
+        )
+    }
+
+    fn submatrix(&self, row: usize, col: usize) -> Matrix2x2 {
+        let mut sub = [[0.0; 2]; 2];
+
+        for i in 0..2 {
+            let r = if i >= row { i + 1 } else { i };
+            for j in 0..2 {
+                let c = if j >= col { j + 1 } else { j };
+
+                sub[i][j] = self.elements[r][c];
+            }
+        }
+
+        Matrix2x2{elements: sub}
     }
 }
 
@@ -64,6 +102,21 @@ impl Matrix4x4 {
             self.get(2, j),
             self.get(3, j)
         ]
+    }
+
+    fn submatrix(&self, row: usize, col: usize) -> Matrix3x3 {
+        let mut sub = [[0.0; 3]; 3];
+
+        for i in 0..3 {
+            let r = if i >= row { i + 1 } else { i };
+            for j in 0..3 {
+                let c = if j >= col { j + 1 } else { j };
+
+                sub[i][j] = self.elements[r][c];
+            }
+        }
+
+        Matrix3x3::from_elements(sub)
     }
 
     pub fn transpose(&self) -> Matrix4x4 {
@@ -317,5 +370,33 @@ mod tests {
     fn determinant_of_2x2() {
         let m = Matrix2x2{elements: [[1.0, 5.0], [-3.0, 2.0]]};
         assert_eq!(17.0, m.determinant())
+    }
+
+    #[test]
+    fn submatrix_of_4x4_matrix() {
+        let m4 = Matrix4x4::from_elementsi([
+            [-6, 1, 1, 6],
+            [-8, 5, 8, 6],
+            [-1, 0, 8, 2],
+            [-7, 1,-1, 1]
+        ]);
+        let m3 = Matrix3x3::from_elementsi([
+            [-6, 1, 6],
+            [-8, 8, 6],
+            [-7, -1, 1]
+        ]);
+
+        assert_eq!(m3, m4.submatrix(2, 1))
+    }
+
+    #[test]
+    fn submatrix_of_3x3_mmatrix() {
+        let m3 = Matrix3x3::from_elementsi([
+            [1,  5, 0],
+            [-3, 2, 7],
+            [0,  6,-3]
+        ]);
+        let m2 = Matrix2x2{elements: [[-3.0, 2.0], [0.0, 6.0]]};
+        assert_eq!(m2, m3.submatrix(0, 2))
     }
 }
