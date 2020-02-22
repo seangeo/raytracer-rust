@@ -2,6 +2,9 @@
 //
 // Only supports square matrices.
 
+use crate::point::Point;
+use crate::vector::Vector;
+
 #[derive(Debug)]
 pub struct Matrix4x4 {
     elements: [[f64; 4]; 4]
@@ -73,9 +76,39 @@ impl std::ops::Mul for Matrix4x4 {
     }
 }
 
+impl std::ops::Mul<Point> for Matrix4x4 {
+    type Output = Point;
+
+    fn mul(self, p: Point) -> Point {
+        let p = p.as_array();
+
+        Point::new(
+            dot(&self.row(0), &p),
+            dot(&self.row(1), &p),
+            dot(&self.row(2), &p)
+        )
+    }
+}
+
+impl std::ops::Mul<Vector> for Matrix4x4 {
+    type Output = Vector;
+
+    fn mul(self, v: Vector) -> Vector {
+        let v = v.to_array();
+
+        Vector::new(
+            dot(&self.row(0), &v),
+            dot(&self.row(1), &v),
+            dot(&self.row(2), &v),
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::point::Point;
+    use crate::vector::Vector;
 
     #[test]
     fn can_create_a_4x4_matrix() {
@@ -180,5 +213,31 @@ mod tests {
         let result = Matrix4x4::from_elementsi(resultv);
 
         assert_eq!(result, m1 * m2);
+    }
+
+    #[test]
+    fn can_multiply_a_matrix_by_a_point() {
+        let p = Point::new(1.0, 2.0, 3.0);
+        let m = Matrix4x4::from_elementsi([
+            [1, 2, 3, 4],
+            [2, 4, 4, 2],
+            [8, 6, 4, 1],
+            [0, 0, 0, 1]
+        ]);
+        let result = Point::new(18.0, 24.0, 33.0);
+        assert_eq!(result, m * p);
+    }
+
+    #[test]
+    fn can_multiply_a_matrix_by_a_vector() {
+        let p = Vector::new(1.0, 2.0, 3.0);
+        let m = Matrix4x4::from_elementsi([
+            [1, 2, 3, 4],
+            [2, 4, 4, 2],
+            [8, 6, 4, 1],
+            [0, 0, 0, 1]
+        ]);
+        let result = Vector::new(14.0, 22.0, 32.0);
+        assert_eq!(result, m * p);
     }
 }

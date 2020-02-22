@@ -12,6 +12,10 @@ impl Point {
     pub fn new(x: f64, y: f64, z: f64) -> Point {
         Point { x, y, z }
     }
+
+    pub fn as_array(self) -> [f64; 4] {
+        [self.x, self.y, self.z, 1.0]
+    }
 }
 
 impl std::ops::Add<Vector> for Point {

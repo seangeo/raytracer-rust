@@ -42,6 +42,10 @@ impl Vector {
             z: self.z / m
         }
     }
+
+    pub fn to_array(self) -> [f64; 4] {
+        [self.x, self.y, self.z, 0.0]
+    }
 }
 
 impl std::ops::Add<Point> for Vector {
