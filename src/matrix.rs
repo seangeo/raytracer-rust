@@ -39,6 +39,29 @@ impl Matrix3x3 {
         )
     }
 
+    fn cofactor(&self, i: usize, j: usize) -> f64 {
+        if i + j % 2 == 1 {
+            -self.minor(i, j)
+        } else {
+            self.minor(i, j)
+        }
+    }
+
+    fn determinant(&self) -> f64 {
+        let mut d = 0.0;
+        let row = self.elements[0];
+
+        for j in 0..3 {
+            d += (self.cofactor(0, j) * row[j]);
+        }
+
+        d
+    }
+
+    fn minor(&self, i: usize, j: usize) -> f64 {
+        self.submatrix(i, j).determinant()
+    }
+
     fn submatrix(&self, row: usize, col: usize) -> Matrix2x2 {
         let mut sub = [[0.0; 2]; 2];
 
@@ -102,6 +125,29 @@ impl Matrix4x4 {
             self.get(2, j),
             self.get(3, j)
         ]
+    }
+
+    fn cofactor(&self, i: usize, j: usize) -> f64 {
+        if i + j % 2 == 1 {
+            -self.minor(i, j)
+        } else {
+            self.minor(i, j)
+        }
+    }
+
+    pub fn determinant(&self) -> f64 {
+        let mut d = 0.0;
+        let row = self.elements[0];
+
+        for j in 0..4 {
+            d += self.cofactor(0, j) * row[j];
+        }
+
+        d
+    }
+
+    fn minor(&self, i: usize, j: usize) -> f64 {
+        self.submatrix(i, j).determinant()
     }
 
     fn submatrix(&self, row: usize, col: usize) -> Matrix3x3 {
@@ -398,5 +444,57 @@ mod tests {
         ]);
         let m2 = Matrix2x2{elements: [[-3.0, 2.0], [0.0, 6.0]]};
         assert_eq!(m2, m3.submatrix(0, 2))
+    }
+
+    #[test]
+    fn minor_of_3x3_matrix() {
+        let m3 = Matrix3x3::from_elementsi([
+            [3, 5, 0],
+            [2,-1,-7],
+            [6,-1, 5]
+        ]);
+
+        assert_eq!(25.0, m3.minor(1, 0));
+    }
+
+    #[test]
+    fn cofactor_of_3x3_matrix() {
+        let m3 = Matrix3x3::from_elementsi([
+            [3, 5, 0],
+            [2,-1,-7],
+            [6,-1, 5]
+        ]);
+        assert_eq!(-12.0, m3.minor(0, 0));
+        assert_eq!(-12.0, m3.cofactor(0, 0));
+        assert_eq!(25.0, m3.minor(1, 0));
+        assert_eq!(-25.0, m3.cofactor(1, 0));
+    }
+
+    #[test]
+    fn determinant_of_3x3_matrix() {
+        let m3 = Matrix3x3::from_elementsi([
+            [ 1, 2, 6],
+            [-5, 8,-4],
+            [ 2, 6, 4]
+        ]);
+        assert_eq!(56.0, m3.cofactor(0, 0));
+        assert_eq!(12.0, m3.cofactor(0, 1));
+        assert_eq!(-46.0, m3.cofactor(0, 2));
+        assert_eq!(-196.0, m3.determinant());
+    }
+
+    #[test]
+    fn determinant_of_4x4_matrix() {
+        let m = Matrix4x4::from_elementsi([
+            [-2,-8, 3, 5],
+            [-3, 1, 7, 3],
+            [1, 2,-9, 6],
+            [-6, 7, 7,-9]
+        ]);
+        assert_eq!(690.0, m.cofactor(0, 0));
+        assert_eq!(447.0, m.cofactor(0, 1));
+        assert_eq!(210.0, m.cofactor(0, 2));
+        assert_eq!(51.0, m.cofactor(0, 3));
+        assert_eq!(-4071.0, m.determinant());
     }
 }
