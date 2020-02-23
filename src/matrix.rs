@@ -23,12 +23,13 @@ struct Matrix3x3 {
 }
 
 impl Matrix3x3 {
-    pub fn from_elements(elements: [[f64; 3]; 3]) -> Matrix3x3 {
+    fn from_elements(elements: [[f64; 3]; 3]) -> Matrix3x3 {
         Matrix3x3 {
             elements: elements
         }
     }
 
+    #[cfg(test)]
     pub fn from_elementsi(elements: [[i64; 3]; 3]) -> Matrix3x3 {
         Matrix3x3::from_elements(
             [
@@ -40,7 +41,7 @@ impl Matrix3x3 {
     }
 
     fn cofactor(&self, i: usize, j: usize) -> f64 {
-        if i + j % 2 == 1 {
+        if (i + j) % 2 == 1 {
             -self.minor(i, j)
         } else {
             self.minor(i, j)
@@ -52,7 +53,7 @@ impl Matrix3x3 {
         let row = self.elements[0];
 
         for j in 0..3 {
-            d += (self.cofactor(0, j) * row[j]);
+            d += self.cofactor(0, j) * row[j];
         }
 
         d
@@ -128,7 +129,7 @@ impl Matrix4x4 {
     }
 
     fn cofactor(&self, i: usize, j: usize) -> f64 {
-        if i + j % 2 == 1 {
+        if (i + j) % 2 == 1 {
             -self.minor(i, j)
         } else {
             self.minor(i, j)
@@ -144,6 +145,24 @@ impl Matrix4x4 {
         }
 
         d
+    }
+
+    pub fn inverse(&self) -> Option<Self> {
+        let d = self.determinant();
+
+        if d == 0.0 {
+            None
+        } else {
+            let mut inv = [[0.0; 4]; 4];
+
+            for i in 0..4 {
+                for j in 0..4 {
+                    inv[j][i] = self.cofactor(i, j) / d;
+                }
+            }
+
+            Some(Matrix4x4{elements: inv})
+        }
     }
 
     fn minor(&self, i: usize, j: usize) -> f64 {
@@ -496,5 +515,95 @@ mod tests {
         assert_eq!(210.0, m.cofactor(0, 2));
         assert_eq!(51.0, m.cofactor(0, 3));
         assert_eq!(-4071.0, m.determinant());
+    }
+
+    #[test]
+    fn inverse_of_non_invertible_matrix_is_none() {
+        let m = Matrix4x4::from_elementsi([
+            [-4, 2,-2,-3],
+            [ 9, 6, 2, 6],
+            [ 0,-5, 1,-5],
+            [ 0, 0, 0, 0]
+        ]);
+
+        assert_eq!(None, m.inverse());
+    }
+
+    #[test]
+    fn inverse_of_invertible_matrix() {
+        let m = Matrix4x4::from_elementsi([
+            [-5, 2, 6,-8],
+            [1,-5, 1, 8],
+            [7, 7,-6,-7],
+            [1,-3, 7, 4]
+        ]);
+        let result = Matrix4x4::from_elements([
+            [ 0.21805 , 0.45113 , 0.24060 , -0.04511 ],
+            [-0.80827 , -1.45677 , -0.44361 , 0.52068 ],
+            [-0.07895 , -0.22368 , -0.05263 , 0.19737 ],
+            [-0.52256 , -0.81391 , -0.30075 , 0.30639 ]
+        ]);
+
+        assert_eq!(160.0, m.minor(2, 3));
+        assert_eq!(-160.0, m.cofactor(2, 3));
+        assert_eq!(-24.0, m.cofactor(3, 0));
+        assert_eq!(result, m.inverse().unwrap());
+    }
+
+    #[test]
+    fn matrix_inversion1() {
+        let m = Matrix4x4::from_elementsi([
+            [8,-5, 9, 2],
+            [7,5,6,1],
+            [-6, 0, 9, 6],
+            [-3, 0,-9,-4]
+        ]);
+
+        let result = Matrix4x4::from_elements([
+            [-0.15385 , -0.15385 , -0.28205 , -0.53846 ],
+            [-0.07692 , 0.12308 , 0.02564 , 0.03077 ],
+            [0.35897 , 0.35897 , 0.43590 , 0.92308 ],
+            [-0.69231 , -0.69231 , -0.76923 , -1.92308]
+        ]);
+
+        assert_eq!(result, m.inverse().unwrap());
+    }
+
+    #[test]
+    fn matrix_inversion2() {
+        let m = Matrix4x4::from_elementsi([
+            [9,3,0,9],
+            [-5 , -2 , -6 , -3 ],
+            [-4, 9, 6, 4],
+            [-7, 6, 6, 2]
+        ]);
+
+        let result = Matrix4x4::from_elements([
+            [-0.04074 , -0.07778 , 0.14444 , -0.22222 ],
+            [-0.07778 , 0.03333 , 0.36667 , -0.33333 ],
+            [-0.02901 , -0.14630 , -0.10926 , 0.12963 ],
+            [0.17778 , 0.06667 , -0.26667 , 0.33333]
+        ]);
+
+        assert_eq!(result, m.inverse().unwrap());
+    }
+
+    #[test]
+    fn multiply_product_by_inverse() {
+        let a = Matrix4x4::from_elementsi([
+            [3,-9, 7, 3],
+            [3,-8, 2,-9],
+            [-4, 4, 4, 1],
+            [-6, 5,-1, 1]
+        ]);
+        let b = Matrix4x4::from_elementsi([
+            [8,2,2,2],
+            [3,-1, 7, 0],
+            [7,0,5,4],
+            [6,-2, 0, 5]
+        ]);
+
+        let c = a * b;
+        assert_eq!(a, c * b.inverse().unwrap());
     }
 }
