@@ -254,6 +254,33 @@ impl std::ops::Mul<Vector> for Matrix4x4 {
     }
 }
 
+pub fn translate(dx: f64, dy: f64, dz: f64) -> Matrix4x4 {
+    Matrix4x4::from_elements([
+        [1.0, 0.0, 0.0, dx],
+        [0.0, 1.0, 0.0, dy],
+        [0.0, 0.0, 1.0, dz],
+        [0.0, 0.0, 0.0, 1.0]
+    ])
+}
+
+pub fn scale(x: f64, y: f64, z: f64) -> Matrix4x4 {
+    Matrix4x4::from_elements([
+        [x, 0.0, 0.0, 0.0],
+        [0.0, y, 0.0, 0.0],
+        [0.0, 0.0, z, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ])
+}
+
+pub fn rotation_x(radians: f64) -> Matrix4x4 {
+    Matrix4x4::from_elements([
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, radians.cos(), -radians.sin(), 0.0],
+        [0.0, radians.sin(), radians.cos(), 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ])
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -605,5 +632,58 @@ mod tests {
 
         let c = a * b;
         assert_eq!(a, c * b.inverse().unwrap());
+    }
+
+    #[test]
+    fn translation() {
+        let t = translate(5.0, -3.0, 2.0);
+        let p = Point::new(-3.0, 4.0, 5.0);
+        let r = Point::new(2.0, 1.0, 7.0);
+        assert_eq!(r, t * p);
+    }
+
+    #[test]
+    fn translation_does_not_affect_vectors() {
+        let t = translate(5.0, -3.0, 2.0);
+        let v = Vector::new(1.0, 2.0, 3.0);
+        assert_eq!(v, t * v);
+    }
+
+    #[test]
+    fn scaling_applied_to_a_point() {
+        let t = scale(2.0, 3.0, 4.0);
+        let p = Point::new(-4.0, 6.0, 8.0);
+        let r = Point::new(-8.0, 18.0, 32.0);
+        assert_eq!(r, t *  p);
+    }
+
+    #[test]
+    fn scaling_applied_to_a_vector() {
+        let t = scale(2.0, 3.0, 4.0);
+        let v = Vector::new(-4.0, 6.0, 8.0);
+        let r = Vector::new(-8.0, 18.0, 32.0);
+        assert_eq!(r, t *  v);
+    }
+
+    #[test]
+    fn point_rotation_around_x() {
+        let p = Point::new(0.0, 1.0, 0.0);
+        let half_quarter = rotation_x(std::f64::consts::PI / 4.0);
+        let full_quarter = rotation_x(std::f64::consts::PI / 2.0);
+        let halfq_result = Point::new(0.0, 2.0_f64.sqrt() / 2.0, 2.0_f64.sqrt() / 2.0);
+        let fullq_result = Point::new(0.0, 0.0, 1.0);
+
+        assert_eq!(halfq_result, half_quarter * p);
+        assert_eq!(fullq_result, full_quarter * p);
+    }
+
+    #[test]
+    fn inverse_rotation_around_x() {
+        let p = Point::new(0.0, 1.0, 0.0);
+        let half_quarter = rotation_x(std::f64::consts::PI / 4.0);
+        let inv = half_quarter.inverse().unwrap();
+        let result = Point::new(0.0, 2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0);
+
+        assert_eq!(result, inv * p);
     }
 }
