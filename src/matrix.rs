@@ -299,6 +299,15 @@ pub fn rotation_z(radians: f64) -> Matrix4x4 {
     ])
 }
 
+pub fn shearing(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix4x4 {
+    Matrix4x4::from_elements([
+        [1.0, xy, xz, 0.0],
+        [yx, 1.0, yz, 0.0],
+        [zx, zy, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ])
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -727,5 +736,59 @@ mod tests {
 
         assert_eq!(halfq_result, half_quarter * p);
         assert_eq!(fullq_result, full_quarter * p);
+    }
+
+    #[test]
+    fn shear_x_in_y() {
+        let t = shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+        let p = Point::new(2.0, 3.0, 4.0);
+        let r = Point::new(5.0, 3.0, 4.0);
+
+        assert_eq!(r, t * p);
+    }
+
+    #[test]
+    fn shear_x_in_z() {
+        let t = shearing(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+        let p = Point::new(2.0, 3.0, 4.0);
+        let r = Point::new(6.0, 3.0, 4.0);
+
+        assert_eq!(r, t * p);
+    }
+
+    #[test]
+    fn shear_y_in_x() {
+        let t = shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+        let p = Point::new(2.0, 3.0, 4.0);
+        let r = Point::new(2.0, 5.0, 4.0);
+
+        assert_eq!(r, t * p);
+    }
+
+    #[test]
+    fn shear_y_in_z() {
+        let t = shearing(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+        let p = Point::new(2.0, 3.0, 4.0);
+        let r = Point::new(2.0, 7.0, 4.0);
+
+        assert_eq!(r, t * p);
+    }
+
+    #[test]
+    fn shear_z_in_x() {
+        let t = shearing(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+        let p = Point::new(2.0, 3.0, 4.0);
+        let r = Point::new(2.0, 3.0, 6.0);
+
+        assert_eq!(r, t * p);
+    }
+
+    #[test]
+    fn shear_z_in_y() {
+        let t = shearing(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+        let p = Point::new(2.0, 3.0, 4.0);
+        let r = Point::new(2.0, 3.0, 7.0);
+
+        assert_eq!(r, t * p);
     }
 }
