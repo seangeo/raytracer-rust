@@ -479,3 +479,15 @@ fn shear_z_in_y() {
 
     assert_eq!(r, t * p);
 }
+
+#[test]
+fn chained_transforms() {
+    let p = Point::new(1.0, 0.0, 1.0);
+    let t = Matrix4x4::identity().
+        rotation_x(std::f64::consts::PI / 2.0).
+        scale(5.0, 5.0, 5.0).
+        translate(10.0, 5.0, 7.0);
+    let result = Point::new(15.0, 0.0, 7.0);
+
+    assert_eq!(result, t * p)
+}

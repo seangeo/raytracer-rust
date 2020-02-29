@@ -111,6 +111,30 @@ impl Matrix4x4 {
         )
     }
 
+    pub fn rotation_x(&self, radians: f64) -> Matrix4x4 {
+        rotation_x(radians) * self
+    }
+
+    pub fn rotation_y(&self, radians: f64) -> Matrix4x4 {
+        rotation_y(radians) * self
+    }
+
+    pub fn rotation_z(&self, radians: f64) -> Matrix4x4 {
+        rotation_z(radians) * self
+    }
+
+    pub fn scale(&self, x: f64, y: f64, z: f64) -> Matrix4x4 {
+        scale(x, y, z) * self
+    }
+
+    pub fn shearing(&self, xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix4x4 {
+        shearing(xy, xz, yx, yz, zx, zy) * self
+    }
+
+    pub fn translate(&self, x: f64, y: f64, z: f64) -> Matrix4x4 {
+        translate(x, y, z) * self
+    }
+
     pub fn get(&self, i: usize, j: usize) -> f64 {
         self.elements[i][j]
     }
@@ -214,6 +238,14 @@ impl std::ops::Mul for Matrix4x4 {
     type Output = Matrix4x4;
 
     fn mul(self, m: Matrix4x4) -> Matrix4x4 {
+        self * &m
+    }
+}
+
+impl std::ops::Mul<&Matrix4x4> for Matrix4x4 {
+    type Output = Matrix4x4;
+
+    fn mul(self, m: &Matrix4x4) -> Matrix4x4 {
         let mut result = [[0.0; 4]; 4];
 
         for i in 0..4 {
