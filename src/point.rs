@@ -13,6 +13,10 @@ impl Point {
         Point { x, y, z }
     }
 
+    pub fn origin() -> Point {
+        Point::new(0.0, 0.0, 0.0)
+    }
+
     pub fn as_array(self) -> [f64; 4] {
         [self.x, self.y, self.z, 1.0]
     }
