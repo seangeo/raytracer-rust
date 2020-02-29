@@ -281,6 +281,24 @@ pub fn rotation_x(radians: f64) -> Matrix4x4 {
     ])
 }
 
+pub fn rotation_y(radians: f64) -> Matrix4x4 {
+    Matrix4x4::from_elements([
+        [radians.cos(), 0.0, radians.sin(), 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [-radians.sin(), 0.0, radians.cos(), 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ])
+}
+
+pub fn rotation_z(radians: f64) -> Matrix4x4 {
+    Matrix4x4::from_elements([
+        [radians.cos(), -radians.sin(), 0.0, 0.0],
+        [radians.sin(), radians.cos(), 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ])
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -685,5 +703,29 @@ mod tests {
         let result = Point::new(0.0, 2.0_f64.sqrt() / 2.0, -2.0_f64.sqrt() / 2.0);
 
         assert_eq!(result, inv * p);
+    }
+
+    #[test]
+    fn point_rotation_around_y() {
+        let p = Point::new(0.0, 0.0, 1.0);
+        let half_quarter = rotation_y(std::f64::consts::PI / 4.0);
+        let full_quarter = rotation_y(std::f64::consts::PI / 2.0);
+        let halfq_result = Point::new(2.0_f64.sqrt() / 2.0, 0.0, 2.0_f64.sqrt() / 2.0);
+        let fullq_result = Point::new(1.0, 0.0, 0.0);
+
+        assert_eq!(halfq_result, half_quarter * p);
+        assert_eq!(fullq_result, full_quarter * p);
+    }
+
+    #[test]
+    fn point_rotation_around_z() {
+        let p = Point::new(0.0, 1.0, 0.0);
+        let half_quarter = rotation_z(std::f64::consts::PI / 4.0);
+        let full_quarter = rotation_z(std::f64::consts::PI / 2.0);
+        let halfq_result = Point::new(-2.0_f64.sqrt() / 2.0, 2.0_f64.sqrt() / 2.0, 0.0);
+        let fullq_result = Point::new(-1.0, 0.0, 0.0);
+
+        assert_eq!(halfq_result, half_quarter * p);
+        assert_eq!(fullq_result, full_quarter * p);
     }
 }
