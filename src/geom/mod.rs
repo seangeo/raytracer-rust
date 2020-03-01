@@ -1,9 +1,11 @@
-pub use crate::{Ray, Point};
+pub use crate::{Intersection, Ray, Point};
 
+#[derive(Debug, PartialEq)]
 pub enum ShapeType {
     Sphere
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Shape {
     pub shape_type: ShapeType
 }
@@ -13,7 +15,7 @@ impl Shape {
         Shape{ shape_type: ShapeType::Sphere }
     }
 
-    pub fn intersects(&self, ray: Ray) -> Option<(f64,f64)> {
+    pub fn intersects(&self, ray: Ray) -> Option<(Intersection,Intersection)> {
         let sphere_to_ray = ray.origin - Point::origin();
 
         let a = ray.direction.dot(ray.direction);
@@ -27,7 +29,7 @@ impl Shape {
             let t1 = (-b - discriminant.sqrt()) / (2.0 * a);
             let t2 = (-b + discriminant.sqrt()) / (2.0 * a);
 
-            Some((t1, t2))
+            Some((Intersection{object: self, t: t1}, Intersection{object: self, t: t2}))
         }
     }
 }
