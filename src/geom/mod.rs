@@ -15,7 +15,7 @@ impl Shape {
         Shape{ shape_type: ShapeType::Sphere }
     }
 
-    pub fn intersects(&self, ray: Ray) -> Option<(Intersection,Intersection)> {
+    pub fn intersects(&self, ray: Ray) -> Vec<Intersection> {
         let sphere_to_ray = ray.origin - Point::origin();
 
         let a = ray.direction.dot(ray.direction);
@@ -24,12 +24,15 @@ impl Shape {
         let discriminant = b.powi(2) - 4.0 * a * c;
 
         if discriminant < 0.0 {
-            None
+            vec![]
         } else {
             let t1 = (-b - discriminant.sqrt()) / (2.0 * a);
             let t2 = (-b + discriminant.sqrt()) / (2.0 * a);
 
-            Some((Intersection{object: self, t: t1}, Intersection{object: self, t: t2}))
+            vec![
+                Intersection{object: self, t: t1},
+                Intersection{object: self, t: t2}
+            ]
         }
     }
 }
