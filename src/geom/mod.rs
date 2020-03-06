@@ -27,6 +27,7 @@ impl Shape {
     }
 
     pub fn intersects(&self, ray: Ray) -> Vec<Intersection> {
+        let ray = ray.transform(self.transform.inverse().unwrap());
         let sphere_to_ray = ray.origin - Point::origin();
 
         let a = ray.direction.dot(ray.direction);
