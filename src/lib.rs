@@ -1,6 +1,7 @@
 pub use canvas::Canvas;
 pub use color::Color;
 pub use intersection::Intersection;
+pub use matrix::Matrix4x4;
 pub use point::Point;
 pub use ray::Ray;
 pub use vector::Vector;

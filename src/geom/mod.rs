@@ -1,4 +1,4 @@
-pub use crate::{Intersection, Ray, Point};
+pub use crate::{Intersection, Matrix4x4, Ray, Point};
 
 #[derive(Debug, PartialEq)]
 pub enum ShapeType {
@@ -7,12 +7,23 @@ pub enum ShapeType {
 
 #[derive(Debug, PartialEq)]
 pub struct Shape {
-    pub shape_type: ShapeType
+    pub shape_type: ShapeType,
+    pub transform: Matrix4x4
 }
 
 impl Shape {
     pub fn sphere() -> Shape {
-        Shape{ shape_type: ShapeType::Sphere }
+        Shape{
+            shape_type: ShapeType::Sphere,
+            transform: Matrix4x4::identity()
+        }
+    }
+
+    pub fn transform(self, t: Matrix4x4) -> Shape {
+        Shape{
+            transform: t,
+            ..self
+        }
     }
 
     pub fn intersects(&self, ray: Ray) -> Vec<Intersection> {

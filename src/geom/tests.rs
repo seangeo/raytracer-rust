@@ -1,5 +1,18 @@
 use super::*;
-use crate::{Intersection, Point, Vector};
+use crate::{Intersection, Matrix4x4, Point, Vector};
+
+#[test]
+fn sphere_default_transform() {
+    let s = Shape::sphere();
+    assert_eq!(Matrix4x4::identity(), s.transform);
+}
+
+#[test]
+fn sphere_can_have_transform_applied() {
+    let m = Matrix4x4::identity().translate(1.0, 2.0, 3.0);
+    let s = Shape::sphere().transform(m);
+    assert_eq!(m, s.transform);
+}
 
 #[test]
 fn ray_sphere_intersection_at_two_points() {
