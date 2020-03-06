@@ -8,26 +8,29 @@ pub enum ShapeType {
 #[derive(Debug, PartialEq)]
 pub struct Shape {
     pub shape_type: ShapeType,
-    pub transform: Matrix4x4
+    pub transform: Matrix4x4,
+    inverse: Matrix4x4
 }
 
 impl Shape {
     pub fn sphere() -> Shape {
         Shape{
             shape_type: ShapeType::Sphere,
-            transform: Matrix4x4::identity()
+            transform: Matrix4x4::identity(),
+            inverse: Matrix4x4::identity()
         }
     }
 
     pub fn transform(self, t: Matrix4x4) -> Shape {
         Shape{
             transform: t,
+            inverse: t.inverse().unwrap(),
             ..self
         }
     }
 
     pub fn intersects(&self, ray: Ray) -> Vec<Intersection> {
-        let ray = ray.transform(self.transform.inverse().unwrap());
+        let ray = ray.transform(self.inverse);
         let sphere_to_ray = ray.origin - Point::origin();
 
         let a = ray.direction.dot(ray.direction);
