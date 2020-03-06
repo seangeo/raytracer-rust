@@ -4,6 +4,7 @@ pub use intersection::Intersection;
 pub use matrix::Matrix4x4;
 pub use point::Point;
 pub use ray::Ray;
+pub use geom::Shape;
 pub use vector::Vector;
 
 pub mod canvas;
