@@ -1,5 +1,18 @@
 use super::*;
-use crate::{Intersection, Matrix4x4, Point, Vector};
+use crate::{Intersection, Material, Matrix4x4, Point, Vector};
+
+#[test]
+fn shape_has_default_material() {
+    let s = Shape::sphere();
+    assert_eq!(Material::new(), s.material);
+}
+
+#[test]
+fn shape_can_be_assigned_material() {
+    let m = Material::new().ambient(1.0);
+    let s = Shape::sphere().material(m);
+    assert_eq!(m, s.material);
+}
 
 #[test]
 fn sphere_default_transform() {

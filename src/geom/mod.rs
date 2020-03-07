@@ -23,10 +23,17 @@ impl Shape {
         }
     }
 
-    pub fn transform(self, t: Matrix4x4) -> Shape {
+    pub fn material(self, material: Material) -> Shape {
+        Shape {
+            material,
+            ..self
+        }
+    }
+
+    pub fn transform(self, transform: Matrix4x4) -> Shape {
         Shape{
-            transform: t,
-            inverse: t.inverse().unwrap(),
+            transform,
+            inverse: transform.inverse().unwrap(),
             ..self
         }
     }

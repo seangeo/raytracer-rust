@@ -19,6 +19,13 @@ impl Material {
             shininess: 200.0
         }
     }
+
+    pub fn ambient(self, ambient: f64) -> Material {
+        Material {
+            ambient,
+            ..self
+        }
+    }
 }
 
 
