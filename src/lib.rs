@@ -5,6 +5,7 @@ pub use material::Material;
 pub use matrix::Matrix4x4;
 pub use point::Point;
 pub use ray::Ray;
+pub use lighting::PointLight;
 pub use geom::Shape;
 pub use vector::Vector;
 

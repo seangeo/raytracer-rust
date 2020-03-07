@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct Color {
     pub r: f64,
     pub g: f64,
@@ -16,6 +16,15 @@ impl Color {
 
     pub fn white() -> Color {
         Self::new(1.0, 1.0, 1.0)
+    }
+}
+
+impl PartialEq for Color {
+    fn eq(&self, other: &Self) -> bool {
+        const EPSILON: f64 = 0.0001;
+        (self.r - other.r).abs() < EPSILON &&
+            (self.g - other.g).abs() < EPSILON &&
+            (self.b - other.b).abs() < EPSILON
     }
 }
 
