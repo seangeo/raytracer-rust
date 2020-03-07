@@ -2,7 +2,7 @@ use crate::vector::Vector;
 use crate::point::Point;
 use crate::matrix::Matrix4x4;
 
-#[derive(Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Ray {
     pub origin: Point,
     pub direction: Vector

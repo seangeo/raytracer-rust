@@ -26,7 +26,7 @@ impl World {
         }
     }
 
-    pub fn intersect(&self, r: Ray) -> Vec<Intersection> {
+    pub fn intersect<'a>(&'a self, r: &'a Ray) -> Vec<Intersection> {
         let mut intersections: Vec<Intersection> = Vec::new();
 
         for object in &self.objects {
@@ -47,7 +47,7 @@ mod tests {
     fn intersect_world() {
         let w = World::default_world();
         let r = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
-        let xs: Vec<Intersection> = w.intersect(r);
+        let xs: Vec<Intersection> = w.intersect(&r);
         assert_eq!(4, xs.len());
         assert_eq!(4.0, xs[0].t);
         assert_eq!(4.5, xs[1].t);

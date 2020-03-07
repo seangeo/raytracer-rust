@@ -38,12 +38,12 @@ impl Shape {
         }
     }
 
-    pub fn intersects(&self, ray: Ray) -> Vec<Intersection> {
-        let ray = ray.transform(self.inverse);
-        let sphere_to_ray = ray.origin - Point::origin();
+    pub fn intersects<'a>(&'a self, ray: &'a Ray) -> Vec<Intersection> {
+        let object_ray = ray.transform(self.inverse);
+        let sphere_to_ray = object_ray.origin - Point::origin();
 
-        let a = ray.direction.dot(ray.direction);
-        let b = 2.0 * ray.direction.dot(sphere_to_ray);
+        let a = object_ray.direction.dot(object_ray.direction);
+        let b = 2.0 * object_ray.direction.dot(sphere_to_ray);
         let c = sphere_to_ray.dot(sphere_to_ray) - 1.0;
         let discriminant = b.powi(2) - 4.0 * a * c;
 
@@ -54,8 +54,8 @@ impl Shape {
             let t2 = (-b + discriminant.sqrt()) / (2.0 * a);
 
             vec![
-                Intersection{object: self, t: t1},
-                Intersection{object: self, t: t2}
+                Intersection{ray: &ray, object: self, t: t1},
+                Intersection{ray: &ray, object: self, t: t2}
             ]
         }
     }

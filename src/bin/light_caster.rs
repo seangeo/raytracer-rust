@@ -20,7 +20,7 @@ fn main() {
             let world_x = -half + pixel_size * x as f64;
             let position = Point::new(world_x, world_y, wall_z);
             let ray = Ray::new(ray_orign, (position - ray_orign).normalize());
-            let xs = sphere.intersects(ray);
+            let xs = sphere.intersects(&ray);
 
             match intersection::hit(&xs) {
                 Some(hit) => {
