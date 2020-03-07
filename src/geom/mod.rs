@@ -1,4 +1,4 @@
-pub use crate::{Intersection, Matrix4x4, Ray, Point, Vector};
+pub use crate::{Intersection, Material, Matrix4x4, Ray, Point, Vector};
 
 #[derive(Debug, PartialEq)]
 pub enum ShapeType {
@@ -8,6 +8,7 @@ pub enum ShapeType {
 #[derive(Debug, PartialEq)]
 pub struct Shape {
     pub shape_type: ShapeType,
+    pub material: Material,
     pub transform: Matrix4x4,
     inverse: Matrix4x4
 }
@@ -16,6 +17,7 @@ impl Shape {
     pub fn sphere() -> Shape {
         Shape{
             shape_type: ShapeType::Sphere,
+            material: Material::new(),
             transform: Matrix4x4::identity(),
             inverse: Matrix4x4::identity()
         }

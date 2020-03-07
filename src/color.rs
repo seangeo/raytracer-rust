@@ -11,11 +11,11 @@ impl Color {
     }
 
     pub fn black() -> Color {
-        Color {
-            r: 0.0,
-            g: 0.0,
-            b: 0.0
-        }
+        Self::new(0.0, 0.0, 0.0)
+    }
+
+    pub fn white() -> Color {
+        Self::new(1.0, 1.0, 1.0)
     }
 }
 
