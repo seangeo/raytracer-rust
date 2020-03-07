@@ -46,9 +46,9 @@ impl Canvas {
     }
 
     fn write_pixel(pixel: &Color, out: & mut dyn std::io::Write) -> std::io::Result<()> {
-        let r = pixel.r.max(0.0).min(1.0) as i64 * 255;
-        let g = pixel.g.max(0.0).min(1.0) as i64 * 255;
-        let b = pixel.b.max(0.0).min(1.0) as i64 * 255;
+        let r = (pixel.r.max(0.0).min(1.0) as f64 * 255.0) as i64;
+        let g = (pixel.g.max(0.0).min(1.0) as f64 * 255.0) as i64;
+        let b = (pixel.b.max(0.0).min(1.0) as f64 * 255.0) as i64;
 
         write!(out, "{} {} {}", r, g, b)
     }
