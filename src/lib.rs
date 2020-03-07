@@ -11,6 +11,7 @@ pub mod canvas;
 pub mod color;
 pub mod geom;
 pub mod intersection;
+pub mod lighting;
 pub mod matrix;
 pub mod point;
 pub mod ray;
