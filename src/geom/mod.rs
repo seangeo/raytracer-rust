@@ -52,7 +52,11 @@ impl Shape {
     }
 
     pub fn normal_at(&self, p: Point) -> Vector {
-        (p - Point::origin()).normalize()
+        let object_point = self.inverse * p;
+        let object_normal = object_point - Point::origin();
+        let world_normal = self.inverse.transpose() * object_normal;
+
+        world_normal.normalize()
     }
 }
 

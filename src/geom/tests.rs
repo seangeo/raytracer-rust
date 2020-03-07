@@ -96,3 +96,21 @@ fn normal_at_point_on_non_axial_point() {
     assert_eq!(n, r);
     assert_eq!(r, r.normalize());
 }
+
+#[test]
+fn normal_at_on_translated_sphere() {
+    let s = Shape::sphere().transform(Matrix4x4::identity().translate(0.0, 1.0, 0.0));
+    let p = Point::new(0.0, 1.70711, -0.70711);
+    let n = Vector::new(0.0, 0.70711, -0.70711);
+    assert_eq!(n, s.normal_at(p));
+}
+
+#[test]
+fn normal_at_on_transformed_sphere() {
+    let m = Matrix4x4::identity().rotation_z(std::f64::consts::PI / 5.0).scale(1.0, 0.5, 1.0);
+    let s = Shape::sphere().transform(m);
+    let p = Point::new(0.0, 2_f64.sqrt() / 2.0, - 2_f64.sqrt() / 2.0);
+    let n = Vector::new(0.0, 0.97014, -0.24254);
+
+    assert_eq!(n, s.normal_at(p));
+}
