@@ -1,6 +1,6 @@
 use crate::point::Point;
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct Vector {
     pub x: f64,
     pub y: f64,
@@ -125,6 +125,15 @@ impl std::ops::Neg for Vector {
             y: -self.y,
             z: -self.z
         }
+    }
+}
+
+impl PartialEq for Vector {
+    fn eq(&self, other: &Self) -> bool {
+        const EPSILON: f64 = 0.0001;
+        (self.x - other.x).abs() < EPSILON &&
+            (self.y - other.y).abs() < EPSILON &&
+            (self.z - other.z).abs() < EPSILON
     }
 }
 
