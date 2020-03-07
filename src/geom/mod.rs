@@ -1,4 +1,4 @@
-pub use crate::{Intersection, Matrix4x4, Ray, Point};
+pub use crate::{Intersection, Matrix4x4, Ray, Point, Vector};
 
 #[derive(Debug, PartialEq)]
 pub enum ShapeType {
@@ -49,6 +49,10 @@ impl Shape {
                 Intersection{object: self, t: t2}
             ]
         }
+    }
+
+    pub fn normal_at(&self, p: Point) -> Vector {
+        (p - Point::origin()).normalize()
     }
 }
 

@@ -78,3 +78,21 @@ fn intersect_translated_sphere_with_ray() {
 
     assert_eq!(result, s.intersects(r));
 }
+
+#[test]
+fn normal_at_point_on_x_axis() {
+    let s = Shape::sphere();
+    let p = Point::new(1.0, 0.0, 0.0);
+    let n = Vector::new(1.0, 0.0, 0.0);
+    assert_eq!(n, s.normal_at(p));
+}
+
+#[test]
+fn normal_at_point_on_non_axial_point() {
+    let s = Shape::sphere();
+    let p = Point::new(3.0_f64.sqrt() / 3.0_f64, 3.0_f64.sqrt() / 3.0_f64, 3.0_f64.sqrt() / 3.0_f64);
+    let n = Vector::new(3.0_f64.sqrt() / 3.0_f64, 3.0_f64.sqrt() / 3.0_f64, 3.0_f64.sqrt() / 3.0_f64);
+    let r = s.normal_at(p);
+    assert_eq!(n, r);
+    assert_eq!(r, r.normalize());
+}
