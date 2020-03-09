@@ -491,3 +491,45 @@ fn chained_transforms() {
 
     assert_eq!(result, t * p)
 }
+
+#[test]
+fn default_view_transform() {
+    let from = Point::new(0.0, 0.0, 0.0);
+    let to = Point::new(0.0, 0.0, -1.0);
+    let up = Vector::new(0.0, 1.0, 0.0);
+    let vt = view_transform(from, to, up);
+    assert_eq!(Matrix4x4::identity(), vt);
+}
+
+#[test]
+fn view_looking_in_the_positive_z_direction() {
+    let from = Point::new(0.0, 0.0, 0.0);
+    let to = Point::new(0.0, 0.0, 1.0);
+    let up = Vector::new(0.0, 1.0, 0.0);
+    let vt = view_transform(from, to, up);
+    assert_eq!(scale(-1.0, 1.0, -1.0), vt);
+}
+
+#[test]
+fn view_moves_the_world() {
+    let from = Point::new(0.0, 0.0, 8.0);
+    let to = Point::new(0.0, 0.0, 0.0);
+    let up = Vector::new(0.0, 1.0, 0.0);
+    let vt = view_transform(from, to, up);
+    assert_eq!(translate(0.0, 0.0, -8.0), vt);
+}
+
+#[test]
+fn arbitrary_view_transform() {
+    let from = Point::new(1.0, 3.0, 2.0);
+    let to = Point::new(4.0, -2.0, 8.0);
+    let up = Vector::new(1.0, 1.0, 0.0);
+    let result = Matrix4x4::from_elements([
+      [ -0.50709, 0.50709,  0.67612, -2.36643],
+      [  0.76772, 0.60609,  0.12122, -2.82843],
+      [ -0.35857, 0.59761, -0.71714,  0.00000],
+      [  0.00000, 0.00000,  0.00000,  1.00000]
+    ]);
+
+    assert_eq!(result, view_transform(from, to, up));
+}

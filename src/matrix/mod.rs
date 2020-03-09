@@ -340,5 +340,20 @@ pub fn shearing(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Matrix4
     ])
 }
 
+pub fn view_transform(from: Point, to: Point, up: Vector) -> Matrix4x4 {
+    let forward = (to - from).normalize();
+    let left = forward.cross(up.normalize());
+    let true_up = left.cross(forward);
+
+    let orientation = Matrix4x4::from_elements([
+        [left.x, left.y, left.z, 0.0],
+        [true_up.x, true_up.y, true_up.z, 0.0],
+        [-forward.x, -forward.y, -forward.z, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ]);
+
+    orientation * translate(-from.x, -from.y, -from.z)
+}
+
 #[cfg(test)]
 mod tests;
