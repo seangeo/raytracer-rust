@@ -1,4 +1,4 @@
-use crate::{Matrix4x4, Point, Ray};
+use crate::{Matrix4x4, Point, Ray, World, Canvas};
 
 pub struct Camera {
     pub hsize: usize,
@@ -58,13 +58,28 @@ impl Camera {
 
         Ray::new(origin, direction)
     }
+
+    pub fn render(&self, world: &World) -> Canvas {
+        let mut canvas = Canvas::new(self.hsize, self.vsize);
+
+        for y in 0..self.vsize - 1 {
+            for x in 0..self.hsize - 1 {
+                let ray = self.ray_for_pixel(x, y);
+                let color = world.color_at(ray);
+                canvas.set(x, y, color);
+            }
+        }
+
+        canvas
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{Matrix4x4, Point, Vector};
+    use crate::{Color, Matrix4x4, Point, Vector, World};
     use std::f64::consts::PI;
+    use crate::matrix::view_transform;
 
     #[test]
     fn creating_a_camera() {
@@ -110,5 +125,18 @@ mod tests {
         let r = c.ray_for_pixel(100, 50);
         assert_eq!(Point::new(0.0, 2.0, -5.0), r.origin);
         assert_eq!(Vector::new(2_f64.sqrt() / 2.0, 0.0, -2_f64.sqrt() / 2.0), r.direction);
+    }
+
+    #[test]
+    fn render_world() {
+        let w = World::default_world();
+        let from = Point::new(0.0, 0.0, -5.0);
+        let to = Point::new(0.0, 0.0, 0.0);
+        let up = Vector::new(0.0, 1.0, 0.0);
+        let t = view_transform(from, to, up);
+        let c = Camera::new(11, 11, PI / 2.0).transform(t);
+
+        let image = c.render(&w);
+        assert_eq!(Color::new(0.38066, 0.47583, 0.2855), image.get(5, 5))
     }
 }

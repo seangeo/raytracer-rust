@@ -9,6 +9,7 @@ pub use ray::Ray;
 pub use lighting::PointLight;
 pub use geom::Shape;
 pub use vector::Vector;
+pub use world::World;
 
 pub mod canvas;
 pub mod color;
