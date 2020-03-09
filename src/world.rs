@@ -32,7 +32,7 @@ impl World {
 
         match intersection::hit(&intersections) {
             None => Color::black(),
-            Some(hit) => hit.lighting(self.light)
+            Some(hit) => hit.lighting(self.light, false)
         }
     }
 

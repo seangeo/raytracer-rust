@@ -8,8 +8,8 @@ pub struct Intersection<'a> {
 }
 
 impl Intersection<'_> {
-    pub fn lighting(&self, light: PointLight) -> Color {
-        self.object.material.lighting(light, self.point(), self.eyev(), self.normal())
+    pub fn lighting(&self, light: PointLight, in_shadow: bool) -> Color {
+        self.object.material.lighting(light, self.point(), self.eyev(), self.normal(), in_shadow)
     }
 
     pub fn point(&self) -> Point {
