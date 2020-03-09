@@ -1,4 +1,4 @@
-use crate::Matrix4x4;
+use crate::{Matrix4x4, Point, Ray};
 
 pub struct Camera {
     pub hsize: usize,
@@ -7,7 +7,8 @@ pub struct Camera {
     pub half_height: f64,
     pub half_width: f64,
     pub pixel_size: f64,
-    pub transform: Matrix4x4
+    pub transform: Matrix4x4,
+    pub inverse_transform: Matrix4x4
 }
 
 impl Camera {
@@ -30,15 +31,40 @@ impl Camera {
             half_height,
             half_width,
             pixel_size,
-            transform: Matrix4x4::identity()
+            transform: Matrix4x4::identity(),
+            inverse_transform: Matrix4x4::identity()
         }
+    }
+
+    pub fn transform(self, transform: Matrix4x4) -> Camera {
+        let inverse_transform = transform.inverse().unwrap();
+
+        Camera {
+            transform,
+            inverse_transform,
+            ..self
+        }
+    }
+
+    pub fn ray_for_pixel(&self, px: usize, py: usize) -> Ray {
+        let xoffset = (px as f64 + 0.5) * self.pixel_size;
+        let yoffset = (py as f64 + 0.5) * self.pixel_size;
+        let world_x = self.half_width - xoffset;
+        let world_y = self.half_height - yoffset;
+
+        let pixel = self.inverse_transform * Point::new(world_x, world_y, -1.0);
+        let origin = self.inverse_transform * Point::origin();
+        let direction = (pixel - origin).normalize();
+
+        Ray::new(origin, direction)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Matrix4x4;
+    use crate::{Matrix4x4, Point, Vector};
+    use std::f64::consts::PI;
 
     #[test]
     fn creating_a_camera() {
@@ -59,5 +85,30 @@ mod tests {
     fn pixel_size_for_vertical_canvas() {
         let c = Camera::new(125, 200, std::f64::consts::PI / 2.0);
         assert_eq!(0.01, (c.pixel_size * 100.0).round() / 100.0);
+    }
+
+    #[test]
+    fn ray_through_centre_of_canvas() {
+        let c = Camera::new(201, 101, PI / 2.0);
+        let r = c.ray_for_pixel(100, 50);
+        assert_eq!(Point::origin(), r.origin);
+        assert_eq!(Vector::new(0.0, 0.0, -1.0), r.direction);
+    }
+
+    #[test]
+    fn ray_through_corner() {
+        let c = Camera::new(201, 101, PI / 2.0);
+        let r = c.ray_for_pixel(0, 0);
+        assert_eq!(Point::origin(), r.origin);
+        assert_eq!(Vector::new(0.66519, 0.33259, -0.66851), r.direction);
+    }
+
+    #[test]
+    fn ray_when_camera_is_transformed() {
+        let t = Matrix4x4::identity().translate(0.0, -2.0, 5.0).rotation_y(PI / 4.0);
+        let c = Camera::new(201, 101, PI / 2.0).transform(t);
+        let r = c.ray_for_pixel(100, 50);
+        assert_eq!(Point::new(0.0, 2.0, -5.0), r.origin);
+        assert_eq!(Vector::new(2_f64.sqrt() / 2.0, 0.0, -2_f64.sqrt() / 2.0), r.direction);
     }
 }
