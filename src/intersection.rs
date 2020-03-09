@@ -1,4 +1,4 @@
-use super::geom::{Point, Ray, Shape, Vector};
+use crate::{Color, PointLight, Point, Ray, Shape, Vector};
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Intersection<'a> {
@@ -8,6 +8,10 @@ pub struct Intersection<'a> {
 }
 
 impl Intersection<'_> {
+    pub fn lighting(&self, light: PointLight) -> Color {
+        self.object.material.lighting(light, self.point(), self.eyev(), self.normal())
+    }
+
     pub fn point(&self) -> Point {
         self.ray.position(self.t)
     }

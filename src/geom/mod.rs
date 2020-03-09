@@ -1,11 +1,11 @@
 pub use crate::{Intersection, Material, Matrix4x4, Ray, Point, Vector};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub enum ShapeType {
     Sphere
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Shape {
     pub shape_type: ShapeType,
     pub material: Material,
