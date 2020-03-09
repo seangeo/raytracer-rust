@@ -1,3 +1,4 @@
+pub use camera::Camera;
 pub use canvas::Canvas;
 pub use color::Color;
 pub use intersection::Intersection;
@@ -20,3 +21,4 @@ pub mod point;
 pub mod ray;
 pub mod vector;
 pub mod world;
+pub mod camera;
