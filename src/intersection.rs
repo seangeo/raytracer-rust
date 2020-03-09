@@ -1,10 +1,24 @@
-use super::geom::{Ray, Shape};
+use super::geom::{Point, Ray, Shape, Vector};
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Intersection<'a> {
     pub ray: &'a Ray,
     pub t: f64,
     pub object: &'a Shape
+}
+
+impl Intersection<'_> {
+    pub fn point(&self) -> Point {
+        self.ray.position(self.t)
+    }
+
+    pub fn eyev(&self) -> Vector {
+        -self.ray.direction
+    }
+
+    pub fn normal(&self) -> Vector {
+        self.object.normal_at(self.point())
+    }
 }
 
 pub fn hit<'a>(intersections: &'a [Intersection]) -> Option<Intersection<'a>> {
@@ -81,5 +95,15 @@ mod tests {
         let hit = hit(&is).unwrap();
 
         assert_eq!(i4, hit)
+    }
+
+    #[test]
+    fn computing_state_of_an_intersection() {
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+        let shape = Shape::sphere();
+        let i = Intersection{ray: &ray, t: 4.0, object: &shape};
+        assert_eq!(Point::new(0.0, 0.0, -1.0), i.point());
+        assert_eq!(Vector::new(0.0, 0.0, -1.0), i.eyev());
+        assert_eq!(Vector::new(0.0, 0.0, -1.0), i.normal());
     }
 }
