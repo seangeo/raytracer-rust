@@ -17,6 +17,20 @@ impl Intersection<'_> {
     }
 
     pub fn normal(&self) -> Vector {
+        let normal = self.raw_normal();
+
+        if self.is_inside() {
+            -normal
+        } else {
+            normal
+        }
+    }
+
+    pub fn is_inside(&self) -> bool {
+        self.raw_normal().dot(self.eyev()) < 0.0
+    }
+
+    fn raw_normal(&self) -> Vector {
         self.object.normal_at(self.point())
     }
 }
@@ -103,6 +117,18 @@ mod tests {
         let shape = Shape::sphere();
         let i = Intersection{ray: &ray, t: 4.0, object: &shape};
         assert_eq!(Point::new(0.0, 0.0, -1.0), i.point());
+        assert_eq!(Vector::new(0.0, 0.0, -1.0), i.eyev());
+        assert_eq!(Vector::new(0.0, 0.0, -1.0), i.normal());
+        assert_eq!(false, i.is_inside());
+    }
+
+    #[test]
+    fn computing_state_of_an_intersection_in_inside() {
+        let ray = Ray::new(Point::new(0.0, 0.0, 0.0), Vector::new(0.0, 0.0, 1.0));
+        let shape = Shape::sphere();
+        let i = Intersection{ray: &ray, t: 1.0, object: &shape};
+        assert_eq!(true, i.is_inside());
+        assert_eq!(Point::new(0.0, 0.0, 1.0), i.point());
         assert_eq!(Vector::new(0.0, 0.0, -1.0), i.eyev());
         assert_eq!(Vector::new(0.0, 0.0, -1.0), i.normal());
     }
