@@ -32,7 +32,7 @@ impl World {
 
         match intersection::hit(&intersections) {
             None => Color::black(),
-            Some(hit) => hit.lighting(self.light, false)
+            Some(hit) => hit.lighting(self.light, self.is_shadowed(hit.over_point()))
         }
     }
 
@@ -45,6 +45,19 @@ impl World {
 
         intersections.sort_by(|a, b| a.t.partial_cmp(&b.t).unwrap());
         intersections
+    }
+
+    pub fn is_shadowed(&self, p: Point) -> bool {
+        let point_to_light = self.light.position - p;
+        let distance_to_light = point_to_light.magnitude();
+        let ray_to_light = Ray::new(p, point_to_light.normalize());
+
+        match intersection::hit(&self.intersect(&ray_to_light)) {
+            None => false,
+            Some(hit) => {
+                hit.t < distance_to_light
+            }
+        }
     }
 }
 
@@ -93,5 +106,34 @@ mod tests {
 
         let r = Ray::new(Point::new(0.0, 0.0, 0.75), Vector::new(0.0, 0.0, -1.0));
         assert_eq!(w.objects[1].material.color, w.color_at(r));
+    }
+
+    #[test]
+    fn color_when_hit_in_shadow() {
+        let w = World {
+            light: PointLight::new(Point::new(0.0, 0.0, -10.0), Color::white()),
+            objects: vec![
+                Shape::sphere(),
+                Shape::sphere().transform(Matrix4x4::identity().translate(0.0, 0.0, 10.0))
+            ]
+        };
+
+        let r = Ray::new(Point::new(0.0, 0.0, 5.0), Vector::new(0.0, 0.0, 1.0));
+        assert_eq!(Color::new(0.1, 0.1, 0.1), w.color_at(r));
+
+    }
+
+    #[test]
+    fn no_shadow_when_nothing_between_point_and_light() {
+        let w = World::default_world();
+        let p = Point::new(0.0, 10.0, 0.0);
+        assert_eq!(false, w.is_shadowed(p));
+    }
+
+    #[test]
+    fn shadow_when_there_is_object_between_point_and_light() {
+        let w = World::default_world();
+        let p = Point::new(10.0, -10.0, 10.0);
+        assert_eq!(true, w.is_shadowed(p));
     }
 }

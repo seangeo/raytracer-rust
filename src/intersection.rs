@@ -16,6 +16,10 @@ impl Intersection<'_> {
         self.ray.position(self.t)
     }
 
+    pub fn over_point(&self) -> Point {
+        self.point() + self.normal() * 0.0001
+    }
+
     pub fn eyev(&self) -> Vector {
         -self.ray.direction
     }
@@ -62,7 +66,7 @@ pub fn hit<'a>(intersections: &'a [Intersection]) -> Option<Intersection<'a>> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Ray, Point, Vector};
+    use crate::{Ray, Point, Vector, Matrix4x4};
     use super::*;
 
     #[test]
@@ -135,5 +139,15 @@ mod tests {
         assert_eq!(Point::new(0.0, 0.0, 1.0), i.point());
         assert_eq!(Vector::new(0.0, 0.0, -1.0), i.eyev());
         assert_eq!(Vector::new(0.0, 0.0, -1.0), i.normal());
+    }
+
+    #[test]
+    fn the_hit_should_offset_the_point() {
+        let ray = Ray::new(Point::new(0.0, 0.0, -5.0), Vector::new(0.0, 0.0, 1.0));
+        let shape = Shape::sphere().transform(Matrix4x4::identity().translate(0.0, 0.0, 1.0));
+        let i = Intersection{ray: &ray, t: 5.0, object: &shape};
+        let over_point = i.over_point();
+        assert!(over_point.z < -0.00005);
+        assert!(over_point.z < i.point().z);
     }
 }

@@ -18,15 +18,15 @@ fn main() {
 
     let left = Shape::sphere().
         material(Material::new().color(Color::new(1.0, 0.8, 0.1)).diffuse(0.7).specular(0.3)).
-        transform(Matrix4x4::identity().scale(1.33, 0.33, 1.33).translate(-1.5, 0.33, -0.75));
+        transform(Matrix4x4::identity().scale(0.33, 0.33, 0.33).translate(-1.5, 1.5, -0.75));
 
     let middle = Shape::sphere().
-        material(Material::new().color(Color::new(1.0, 0.0, 1.0)).diffuse(0.7).specular(0.3)).
-        transform(Matrix4x4::identity().translate(1.5, 1.0, -0.5));
+        material(Material::new().color(Color::new(1.0, 0.0, 1.0)).diffuse(0.7).specular(0.8).ambient(0.2)).
+        transform(Matrix4x4::identity().translate(-0.5, 1.0, 0.5));
 
     let right = Shape::sphere().
         material(Material::new().color(Color::new(0.5, 1.0, 0.1)).diffuse(0.7).specular(0.3)).
-        transform(Matrix4x4::identity().scale(0.5, 0.5, 0.5).translate(-0.5, 0.5, 0.5));
+        transform(Matrix4x4::identity().scale(0.5, 0.5, 0.5).translate(1.5, 0.5, -0.5));
 
     let world = World {
         light: PointLight::new(Point::new(-10.0, 10.0, -10.0), Color::white()),
