@@ -2,28 +2,28 @@ use super::*;
 use crate::{Intersection, Material, Matrix4x4, Point, Vector};
 
 #[test]
-fn shape_has_default_material() {
-    let s = Shape::sphere();
+fn testshape_has_default_material() {
+    let s = Shape::test_shape();
     assert_eq!(Material::new(), s.material);
 }
 
 #[test]
-fn shape_can_be_assigned_material() {
+fn test_shape_can_be_assigned_material() {
     let m = Material::new().ambient(1.0);
-    let s = Shape::sphere().material(m);
+    let s = Shape::test_shape().material(m);
     assert_eq!(m, s.material);
 }
 
 #[test]
-fn sphere_default_transform() {
-    let s = Shape::sphere();
+fn test_sphere_default_transform() {
+    let s = Shape::test_shape();
     assert_eq!(Matrix4x4::identity(), s.transform);
 }
 
 #[test]
-fn sphere_can_have_transform_applied() {
+fn test_shape_can_have_transform_applied() {
     let m = Matrix4x4::identity().translate(1.0, 2.0, 3.0);
-    let s = Shape::sphere().transform(m);
+    let s = Shape::test_shape().transform(m);
     assert_eq!(m, s.transform);
 }
 
