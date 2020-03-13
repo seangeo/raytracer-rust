@@ -127,3 +127,54 @@ fn normal_at_on_transformed_sphere() {
 
     assert_eq!(n, s.normal_at(p));
 }
+
+//// Planes
+
+#[test]
+fn normal_at_on_a_plane() {
+    let p = Shape::plane();
+    let n = Vector::new(0.0, 1.0, 0.0);
+    assert_eq!(n, p.normal_at(Point::new(0.0, 0.0, 0.0)));
+    assert_eq!(n, p.normal_at(Point::new(-10.0, 0.0, 1000.0)));
+    assert_eq!(n, p.normal_at(Point::new(50.0, 0.0, 50.0)));
+}
+
+#[test]
+fn plane_intersect_with_parallel_ray() {
+    let p = Shape::plane();
+    let r = Ray::new(Point::new(0.0, 10.0, 0.0),  Vector::new(0.0, 0.0, 1.0));
+    let xs: Vec<Intersection> = vec![];
+    assert_eq!(xs, p.intersects(&r));
+}
+
+#[test]
+fn plane_intersect_with_coplanar_ray() {
+    let p = Shape::plane();
+    let r = Ray::new(Point::new(0.0, 0.0, 0.0),  Vector::new(0.0, 0.0, 1.0));
+    let xs: Vec<Intersection> = vec![];
+    assert_eq!(xs, p.intersects(&r));
+}
+
+#[test]
+fn plane_interesction_from_above() {
+    let p = Shape::plane();
+    let r = Ray::new(Point::new(0.0, 1.0, 0.0),  Vector::new(0.0, -1.0, 0.0));
+
+    let result = vec![
+        Intersection{ray: &r, object: &p, t: 1.0}
+    ];
+
+    assert_eq!(result, p.intersects(&r));
+}
+
+#[test]
+fn plane_interesction_from_below() {
+    let p = Shape::plane();
+    let r = Ray::new(Point::new(0.0, -1.0, 0.0),  Vector::new(0.0, 1.0, 0.0));
+
+    let result = vec![
+        Intersection{ray: &r, object: &p, t: 1.0}
+    ];
+
+    assert_eq!(result, p.intersects(&r));
+}

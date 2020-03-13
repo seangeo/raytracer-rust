@@ -2,6 +2,7 @@ pub use crate::{Intersection, Material, Matrix4x4, Ray, Point, Vector};
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 enum ShapeType {
+    Plane,
     Sphere,
     TestShape
 }
@@ -9,6 +10,7 @@ enum ShapeType {
 impl ShapeType {
     pub fn intersects(&self, local_ray: &Ray) -> Vec<f64> {
         match self {
+            Self::Plane => Self::plane_intersection(local_ray),
             Self::Sphere => Self::sphere_intersection(local_ray),
             Self::TestShape => vec![]
         }
@@ -16,8 +18,17 @@ impl ShapeType {
 
     pub fn normal_at(&self, point: Point) -> Vector {
         match self {
+            Self::Plane => Vector::new(0.0, 1.0, 0.0),
             Self::Sphere => point - Point::origin(),
             Self::TestShape => Vector::new(0.0, 0.0, 0.0)
+        }
+    }
+
+    fn plane_intersection(ray: &Ray) -> Vec<f64> {
+        if ray.direction.y.abs() < 0.0001 {
+            vec![]
+        } else {
+            vec![-ray.origin.y / ray.direction.y]
         }
     }
 
@@ -60,6 +71,10 @@ impl Shape {
 
     pub fn test_shape() -> Shape {
         Self::new(ShapeType::TestShape)
+    }
+
+    pub fn plane() -> Shape {
+        Self::new(ShapeType::Plane)
     }
 
     pub fn sphere() -> Shape {
