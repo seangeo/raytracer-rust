@@ -23,3 +23,4 @@ pub mod ray;
 pub mod vector;
 pub mod world;
 pub mod camera;
+pub mod pattern;
