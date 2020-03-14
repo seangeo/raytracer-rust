@@ -1,8 +1,8 @@
-use crate::{Point, Vector, Color, PointLight};
+use crate::{Point, Vector, Color, PointLight, Pattern};
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Material {
-    pub color: Color,
+    pub pattern: Pattern,
     pub ambient: f64,
     pub diffuse: f64,
     pub specular: f64,
@@ -12,7 +12,7 @@ pub struct Material {
 impl Material {
     pub fn new() -> Material {
         Material {
-            color: Color::white(),
+            pattern: Pattern::solid(Color::white()),
             ambient: 0.1,
             diffuse: 0.9,
             specular: 0.9,
@@ -29,7 +29,7 @@ impl Material {
 
     pub fn color(self, color: Color) -> Material {
         Material {
-            color,
+            pattern: Pattern::solid(color),
             ..self
         }
     }
@@ -37,6 +37,13 @@ impl Material {
     pub fn diffuse(self, diffuse: f64) -> Material {
         Material {
             diffuse,
+            ..self
+        }
+    }
+
+    pub fn pattern(self, pattern: Pattern) -> Material {
+        Material {
+            pattern,
             ..self
         }
     }
@@ -56,7 +63,7 @@ impl Material {
     }
 
     pub fn lighting(&self, light: PointLight, position: Point, eye: Vector, normal: Vector, in_shadow: bool) -> Color {
-        let effective_color = self.color * light.intensity;
+        let effective_color = self.pattern.color_at(position) * light.intensity;
         let ambient = effective_color * self.ambient;
         let mut diffuse = Color::black();
         let mut specular = Color::black();

@@ -4,6 +4,7 @@ pub use color::Color;
 pub use intersection::Intersection;
 pub use material::Material;
 pub use matrix::Matrix4x4;
+pub use pattern::Pattern;
 pub use point::Point;
 pub use ray::Ray;
 pub use lighting::PointLight;

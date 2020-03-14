@@ -1,5 +1,5 @@
 use super::*;
-use crate::{Point, Vector, Color, PointLight};
+use crate::{Point, Vector, Color, PointLight, Pattern};
 
 #[test]
 fn eye_between_light_and_surface() {
@@ -71,4 +71,21 @@ fn light_for_surface_in_shadow() {
     let result = Color::new(0.1, 0.1, 0.1);
 
     assert_eq!(result, m.lighting(light, position, eyev, normalv, true));
+}
+
+#[test]
+fn lighting_with_a_pattern() {
+    let p = Pattern::stripe(Color::white(), Color::black());
+    let m = Material::new().
+        ambient(1.0).
+        diffuse(0.0).
+        specular(0.0).
+        pattern(p);
+
+    let eyev = Vector::new(0.0, 0.0, -1.0);
+    let normalv = Vector::new(0.0, 0.0, -1.0);
+    let light = PointLight::new(Point::new(0.0, 0.0, -10.0), Color::white());
+
+    assert_eq!(Color::white(), m.lighting(light, Point::new(0.9, 0.0, 0.0), eyev, normalv, false));
+    assert_eq!(Color::black(), m.lighting(light, Point::new(1.1, 0.0, 0.0), eyev, normalv, false));
 }

@@ -105,7 +105,7 @@ mod tests {
         };
 
         let r = Ray::new(Point::new(0.0, 0.0, 0.75), Vector::new(0.0, 0.0, -1.0));
-        assert_eq!(w.objects[1].material.color, w.color_at(r));
+        assert_eq!(Color::white(), w.color_at(r));
     }
 
     #[test]
