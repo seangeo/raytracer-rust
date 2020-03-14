@@ -4,27 +4,33 @@ use std::f64::consts::PI;
 use ray_tracer::matrix::view_transform;
 
 fn main() {
-    let pattern = Pattern::stripe(Color::new(0.9, 0.1, 0.8), Color::white());
-    let room_material = Material::new().specular(0.0).pattern(pattern);
+    let t = Matrix4x4::identity().scale(0.1, 0.1, 0.1).rotation_z(PI / 4.0);
+    let object_pattern = Pattern::stripe(Color::new(1.0, 0.0, 1.0), Color::white()).transform(t);
+
+    let floor_pattern = Pattern::stripe(Color::new(0.9, 0.1, 0.8), Color::white());
+    let t = Matrix4x4::identity().scale(1.5, 1.0, 1.0).rotation_y(PI / 2.0);
+    let wall_pattern = Pattern::stripe(Color::new(0.9, 0.1, 0.8), Color::white()).transform(t);
+    let floor_material = Material::new().specular(0.0).pattern(floor_pattern);
+    let wall_material = Material::new().specular(0.0).pattern(wall_pattern).diffuse(0.7);
 
     let floor = Shape::plane().
         //transform(Matrix4x4::identity().scale(10.0, 0.01, 10.0)).
-        material(room_material);
+        material(floor_material);
 
     let backdrop = Shape::plane().
         transform(Matrix4x4::identity().rotation_x(PI /  2.0).translate(0.0, 0.0, 10.0)).
-        material(room_material.diffuse(0.7).specular(0.1));
+        material(wall_material);
 
     let left = Shape::sphere().
-        material(Material::new().pattern(pattern).diffuse(0.7).specular(0.3)).
+        material(Material::new().pattern(object_pattern).diffuse(0.7).specular(0.3)).
         transform(Matrix4x4::identity().scale(0.33, 0.33, 0.33).translate(-2.0, 1.35, -0.75));
 
     let middle = Shape::sphere().
-        material(Material::new().pattern(pattern).diffuse(0.7).specular(0.8).ambient(0.2)).
-        transform(Matrix4x4::identity().translate(-0.5, 1.0, 0.5));
+        material(Material::new().pattern(object_pattern).diffuse(0.7).specular(0.8).ambient(0.2)).
+        transform(Matrix4x4::identity().rotation_y(PI / 2.0).translate(-0.5, 1.0, 0.5));
 
     let right = Shape::sphere().
-        material(Material::new().pattern(pattern).diffuse(0.7).specular(0.3)).
+        material(Material::new().pattern(object_pattern).diffuse(0.7).specular(0.3)).
         transform(Matrix4x4::identity().scale(0.5, 0.5, 0.5).translate(1.8, -0.125, -0.5));
 
     let world = World {
@@ -32,7 +38,7 @@ fn main() {
         objects: vec![floor, backdrop,  left, middle, right]
     };
 
-    let view = view_transform(Point::new(-2.0, 1.5, -5.0), Point::new(0.0, 1.0, 0.0), Vector::new(0.0, 1.0, 0.0));
+    let view = view_transform(Point::new(0.0, 1.5, -5.0), Point::new(0.0, 1.0, 0.0), Vector::new(0.0, 1.0, 0.0));
     let camera = Camera::new(600, 400, PI / 3.0).transform(view);
     let canvas = camera.render(&world);
 

@@ -9,11 +9,15 @@ pub struct Intersection<'a> {
 
 impl Intersection<'_> {
     pub fn lighting(&self, light: PointLight, in_shadow: bool) -> Color {
-        self.object.material.lighting(light, self.point(), self.eyev(), self.normal(), in_shadow)
+        self.object.material.light_intersection(light, self, in_shadow)
     }
 
     pub fn point(&self) -> Point {
         self.ray.position(self.t)
+    }
+
+    pub fn object_point(&self) -> Point {
+        self.object.inverse_transform * self.point()
     }
 
     pub fn over_point(&self) -> Point {

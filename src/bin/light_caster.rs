@@ -24,10 +24,7 @@ fn main() {
 
             match intersection::hit(&xs) {
                 Some(hit) => {
-                    let point = ray.position(hit.t);
-                    let normal = hit.object.normal_at(point);
-                    let eye = -ray.direction;
-                    let color = hit.object.material.lighting(light, point, eye, normal, false);
+                    let color = hit.object.material.light_intersection(light, &hit, false);
 
                     canvas.set(x, y, color)
                 }

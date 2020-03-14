@@ -56,7 +56,7 @@ pub struct Shape {
     shape_type: ShapeType,
     pub material: Material,
     pub transform: Matrix4x4,
-    inverse: Matrix4x4
+    pub inverse_transform: Matrix4x4
 }
 
 impl Shape {
@@ -65,7 +65,7 @@ impl Shape {
             shape_type,
             material: Material::new(),
             transform: Matrix4x4::identity(),
-            inverse: Matrix4x4::identity()
+            inverse_transform: Matrix4x4::identity()
         }
     }
 
@@ -91,13 +91,13 @@ impl Shape {
     pub fn transform(self, transform: Matrix4x4) -> Shape {
         Shape{
             transform,
-            inverse: transform.inverse().unwrap(),
+            inverse_transform: transform.inverse().unwrap(),
             ..self
         }
     }
 
     pub fn intersects<'a>(&'a self, ray: &'a Ray) -> Vec<Intersection> {
-        let object_ray = ray.transform(self.inverse);
+        let object_ray = ray.transform(self.inverse_transform);
         let intersects = self.shape_type.intersects(&object_ray);
         intersects.
             iter().
@@ -106,9 +106,9 @@ impl Shape {
     }
 
     pub fn normal_at(&self, p: Point) -> Vector {
-        let object_point = self.inverse * p;
+        let object_point = self.inverse_transform * p;
         let object_normal = self.shape_type.normal_at(object_point);
-        let world_normal = self.inverse.transpose() * object_normal;
+        let world_normal = self.inverse_transform.transpose() * object_normal;
 
         world_normal.normalize()
     }

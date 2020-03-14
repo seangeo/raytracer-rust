@@ -1,4 +1,4 @@
-use crate::{Point, Vector, Color, PointLight, Pattern};
+use crate::{Point, Vector, Color, PointLight, Pattern, Intersection};
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Material {
@@ -62,8 +62,17 @@ impl Material {
         }
     }
 
-    pub fn lighting(&self, light: PointLight, position: Point, eye: Vector, normal: Vector, in_shadow: bool) -> Color {
-        let effective_color = self.pattern.color_at(position) * light.intensity;
+    pub fn light_intersection(&self, light: PointLight, intersection: &Intersection, in_shadow: bool) -> Color {
+        self.lighting(light,
+            intersection.point(),
+            intersection.object_point(),
+            intersection.eyev(),
+            intersection.normal(),
+            in_shadow)
+    }
+
+    fn lighting(&self, light: PointLight, position: Point, object_point: Point, eye: Vector, normal: Vector, in_shadow: bool) -> Color {
+        let effective_color = self.pattern.color_at(object_point) * light.intensity;
         let ambient = effective_color * self.ambient;
         let mut diffuse = Color::black();
         let mut specular = Color::black();
