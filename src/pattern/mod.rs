@@ -4,20 +4,32 @@ use crate::{Color, Matrix4x4, Point};
 pub enum PatternType {
     Solid(Color),
     Stripe(Box<Pattern>, Box<Pattern>),
-    LinearGradient(Color, Color)
+    LinearGradient(Color, Color),
+    Ring(Box<Pattern>, Box<Pattern>)
 }
 
 impl PatternType {
     pub fn color_at(&self, p: Point) -> Color {
         match self {
+            Self::LinearGradient(c1, c2) => Self::linear_gradient_color_at(*c1, *c2, p),
+            Self::Ring(p1, p2) => Self::ring_color_at(&*p1, &*p2, p),
             Self::Solid(c) => *c,
-            Self::Stripe(p1, p2) => Self::stripe_color_at(&*p1, &*p2, p),
-            Self::LinearGradient(c1, c2) => Self::linear_gradient_color_at(*c1, *c2, p)
+            Self::Stripe(p1, p2) => Self::stripe_color_at(&*p1, &*p2, p)
         }
     }
 
     fn linear_gradient_color_at(c1: Color, c2: Color, p: Point) -> Color {
         c1 + (c2 - c1) * (p.x - p.x.floor())
+    }
+
+    fn ring_color_at(p1: &Pattern, p2: &Pattern, p: Point) -> Color {
+        let v = (p.x.powi(2) + p.z.powi(2)).sqrt().floor();
+
+        if v as i64 % 2 == 0 {
+            p1.color_at(p)
+        } else {
+            p2.color_at(p)
+        }
     }
 
     fn stripe_color_at(p1: &Pattern, p2: &Pattern, p: Point) -> Color {
@@ -43,6 +55,10 @@ impl Pattern {
             transform: Matrix4x4::identity(),
             inverse_transform: Matrix4x4::identity(),
         }
+    }
+
+    pub fn ring(p1: Pattern, p2: Pattern) -> Pattern {
+        Self::new(PatternType::Ring(Box::new(p1), Box::new(p2)))
     }
 
     pub fn solid(c: Color) -> Pattern {

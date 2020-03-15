@@ -33,13 +33,15 @@ fn main() {
         material(Material::new().pattern(object_pattern.clone()).diffuse(0.7).specular(0.8).ambient(0.2)).
         transform(Matrix4x4::identity().rotation_y(PI / 2.0).translate(-0.5, 1.0, 0.5));
 
+    let right_pattern = Pattern::ring(Pattern::solid(Color::new(1.0, 0.0, 0.0)), Pattern::solid(Color::new(0.0, 1.0, 0.0)));
+    let right_pattern = right_pattern.transform(Matrix4x4::identity().scale(0.125, 1.0, 0.125).rotation_x(PI / 2.0));
     let right = Shape::sphere().
-        material(Material::new().pattern(object_pattern.clone()).diffuse(0.7).specular(0.3)).
-        transform(Matrix4x4::identity().scale(0.5, 0.5, 0.5).translate(1.8, -0.125, -0.5));
+        material(Material::new().pattern(right_pattern).diffuse(0.7).specular(0.3)).
+        transform(Matrix4x4::identity().scale(0.5, 0.5, 0.5).translate(1.8, 1.0, -0.5));
 
     let world = World {
         light: PointLight::new(Point::new(-10.0, 10.0, -10.0), Color::white()),
-        objects: vec![floor, backdrop,  left, middle, right]
+        objects: vec![floor, backdrop, left, middle, right]
     };
 
     let view = view_transform(Point::new(0.0, 1.5, -5.0), Point::new(0.0, 1.0, 0.0), Vector::new(0.0, 1.0, 0.0));

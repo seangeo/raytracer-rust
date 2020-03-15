@@ -64,3 +64,13 @@ fn gradient_pattern_test() {
     assert_eq!(Color::new(0.5, 0.5, 0.5), p.color_at(Point::new(0.5, 0.0, 0.0)));
     assert_eq!(Color::new(0.25, 0.25, 0.25), p.color_at(Point::new(0.75, 0.0, 0.0)));
 }
+
+#[test]
+fn ring_pattern_test() {
+    let p = Pattern::ring(Pattern::solid(Color::white()), Pattern::solid(Color::black()));
+
+    assert_eq!(Color::white(), p.color_at(Point::new(0.0, 0.0, 0.0)));
+    assert_eq!(Color::black(), p.color_at(Point::new(1.0, 0.0, 0.0)));
+    assert_eq!(Color::black(), p.color_at(Point::new(0.0, 0.0, 1.0)));
+    assert_eq!(Color::black(), p.color_at(Point::new(0.708, 0.0, 0.708)));
+}
