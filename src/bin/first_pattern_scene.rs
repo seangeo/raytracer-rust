@@ -30,11 +30,11 @@ fn main() {
         transform(Matrix4x4::identity().scale(0.33, 1.0, 0.33).translate(-2.0, 1.35, -0.75));
 
     let middle = Shape::sphere().
-        material(Material::new().pattern(object_pattern).diffuse(0.7).specular(0.8).ambient(0.2)).
+        material(Material::new().pattern(object_pattern.clone()).diffuse(0.7).specular(0.8).ambient(0.2)).
         transform(Matrix4x4::identity().rotation_y(PI / 2.0).translate(-0.5, 1.0, 0.5));
 
     let right = Shape::sphere().
-        material(Material::new().pattern(object_pattern).diffuse(0.7).specular(0.3)).
+        material(Material::new().pattern(object_pattern.clone()).diffuse(0.7).specular(0.3)).
         transform(Matrix4x4::identity().scale(0.5, 0.5, 0.5).translate(1.8, -0.125, -0.5));
 
     let world = World {

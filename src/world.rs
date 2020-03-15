@@ -98,8 +98,8 @@ mod tests {
         let w = World::default_world();
         let w = World {
             objects: vec![
-                w.objects[0].material(w.objects[0].material.ambient(1.0)),
-                w.objects[1].material(w.objects[1].material.ambient(1.0)),
+                w.objects[0].clone().material(w.objects[0].clone().material.ambient(1.0)),
+                w.objects[1].clone().material(w.objects[1].clone().material.ambient(1.0)),
             ],
             ..w
         };

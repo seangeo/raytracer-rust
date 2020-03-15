@@ -10,7 +10,7 @@ fn testshape_has_default_material() {
 #[test]
 fn test_shape_can_be_assigned_material() {
     let m = Material::new().ambient(1.0);
-    let s = Shape::test_shape().material(m);
+    let s = Shape::test_shape().material(m.clone());
     assert_eq!(m, s.material);
 }
 

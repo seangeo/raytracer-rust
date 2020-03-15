@@ -51,7 +51,7 @@ impl ShapeType {
     }
 }
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Shape {
     shape_type: ShapeType,
     pub material: Material,

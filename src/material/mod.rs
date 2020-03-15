@@ -1,6 +1,6 @@
 use crate::{Point, Vector, Color, PointLight, Pattern, Intersection};
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Material {
     pub pattern: Pattern,
     pub ambient: f64,

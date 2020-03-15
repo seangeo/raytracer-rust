@@ -8,11 +8,11 @@ fn main() {
 
     let floor = Shape::plane().
         //transform(Matrix4x4::identity().scale(10.0, 0.01, 10.0)).
-        material(room_material);
+        material(room_material.clone());
 
     let backdrop = Shape::plane().
         transform(Matrix4x4::identity().rotation_x(PI /  2.0).translate(0.0, 0.0, 10.0)).
-        material(room_material.diffuse(0.7).specular(0.1));
+        material(room_material.clone().diffuse(0.7).specular(0.1));
 
     let left = Shape::sphere().
         material(Material::new().color(Color::new(1.0, 0.8, 0.1)).diffuse(0.7).specular(0.3)).

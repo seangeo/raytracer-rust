@@ -8,12 +8,12 @@ fn main() {
 
     let floor = Shape::sphere().
         transform(Matrix4x4::identity().scale(10.0, 0.01, 10.0)).
-        material(room_material);
+        material(room_material.clone());
     let left_wall = Shape::sphere().
-        material(room_material).
+        material(room_material.clone()).
         transform(Matrix4x4::identity().scale(10.0, 0.01, 10.0).rotation_x(PI / 2.0).rotation_y(-PI/4.0).translate(0.0, 0.0, 5.0));
     let right_wall = Shape::sphere().
-        material(room_material).
+        material(room_material.clone()).
         transform(Matrix4x4::identity().scale(10.0, 0.01, 10.0).rotation_x(PI / 2.0).rotation_y(PI/4.0).translate(0.0, 0.0, 5.0));
 
     let left = Shape::sphere().
