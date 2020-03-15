@@ -3,15 +3,21 @@ use crate::{Color, Matrix4x4, Point};
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub enum PatternType {
     Solid(Color),
-    Stripe(Color, Color)
+    Stripe(Color, Color),
+    LinearGradient(Color, Color)
 }
 
 impl PatternType {
     pub fn color_at(&self, p: Point) -> Color {
         match self {
             Self::Solid(c) => *c,
-            Self::Stripe(c1, c2) => Self::stripe_color_at(*c1, *c2, p)
+            Self::Stripe(c1, c2) => Self::stripe_color_at(*c1, *c2, p),
+            Self::LinearGradient(c1, c2) => Self::linear_gradient_color_at(*c1, *c2, p)
         }
+    }
+
+    fn linear_gradient_color_at(c1: Color, c2: Color, p: Point) -> Color {
+        c1 + (c2 - c1) * (p.x - p.x.floor())
     }
 
     fn stripe_color_at(c1: Color, c2: Color, p: Point) -> Color {
@@ -31,20 +37,24 @@ pub struct Pattern {
 }
 
 impl Pattern {
-    pub fn solid(c: Color) -> Pattern {
+    pub fn new(pattern_type: PatternType) -> Pattern {
         Pattern {
+            pattern_type,
             transform: Matrix4x4::identity(),
             inverse_transform: Matrix4x4::identity(),
-            pattern_type: PatternType::Solid(c)
         }
     }
 
+    pub fn solid(c: Color) -> Pattern {
+        Self::new(PatternType::Solid(c))
+    }
+
     pub fn stripe(c1: Color, c2: Color) -> Pattern {
-        Pattern {
-            transform: Matrix4x4::identity(),
-            inverse_transform: Matrix4x4::identity(),
-            pattern_type: PatternType::Stripe(c1, c2)
-        }
+        Self::new(PatternType::Stripe(c1, c2))
+    }
+
+    pub fn linear_gradient(c1: Color, c2: Color) -> Pattern {
+        Self::new(PatternType::LinearGradient(c1, c2))
     }
 
     pub fn transform(self, transform: Matrix4x4) -> Pattern {

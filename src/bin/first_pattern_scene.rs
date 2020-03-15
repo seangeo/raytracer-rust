@@ -7,7 +7,8 @@ fn main() {
     let t = Matrix4x4::identity().scale(0.1, 0.1, 0.1).rotation_z(PI / 4.0);
     let object_pattern = Pattern::stripe(Color::new(1.0, 0.0, 1.0), Color::white()).transform(t);
 
-    let floor_pattern = Pattern::stripe(Color::new(0.9, 0.1, 0.8), Color::white());
+    let t = Matrix4x4::identity().scale(13.0, 1.0, 1.0).rotation_y(-PI / 2.0).translate(0.0, 0.0, 10.0);
+    let floor_pattern = Pattern::linear_gradient(Color::white(), Color::black()).transform(t);
     let t = Matrix4x4::identity().scale(1.5, 1.0, 1.0).rotation_y(PI / 2.0);
     let wall_pattern = Pattern::stripe(Color::new(0.9, 0.1, 0.8), Color::white()).transform(t);
     let floor_material = Material::new().specular(0.0).pattern(floor_pattern);
@@ -21,9 +22,12 @@ fn main() {
         transform(Matrix4x4::identity().rotation_x(PI /  2.0).translate(0.0, 0.0, 10.0)).
         material(wall_material);
 
+
+    let left_p_t = Matrix4x4::identity().scale(2.0, 1.0, 1.0).rotation_z(-PI / 2.0).translate(0.0, -1.0, 0.0);
+    let left_pattern = Pattern::linear_gradient(Color::new(1.0, 1.0, 0.0), Color::new(0.0, 1.0, 0.0)).transform(left_p_t);
     let left = Shape::sphere().
-        material(Material::new().pattern(object_pattern).diffuse(0.7).specular(0.3)).
-        transform(Matrix4x4::identity().scale(0.33, 0.33, 0.33).translate(-2.0, 1.35, -0.75));
+        material(Material::new().pattern(left_pattern).diffuse(0.7).specular(0.3)).
+        transform(Matrix4x4::identity().scale(0.33, 1.0, 0.33).translate(-2.0, 1.35, -0.75));
 
     let middle = Shape::sphere().
         material(Material::new().pattern(object_pattern).diffuse(0.7).specular(0.8).ambient(0.2)).

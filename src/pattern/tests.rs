@@ -55,3 +55,12 @@ fn stripes_with_a_pattern_transform() {
     assert_eq!(Color::white(), p.color_at(Point::new(2.0, 1.0, 1.0)));
 }
 
+#[test]
+fn gradient_pattern_test() {
+    let p = Pattern::linear_gradient(Color::white(), Color::black());
+
+    assert_eq!(Color::white(), p.color_at(Point::new(0.0, 0.0, 0.0)));
+    assert_eq!(Color::new(0.75, 0.75, 0.75), p.color_at(Point::new(0.25, 0.0, 0.0)));
+    assert_eq!(Color::new(0.5, 0.5, 0.5), p.color_at(Point::new(0.5, 0.0, 0.0)));
+    assert_eq!(Color::new(0.25, 0.25, 0.25), p.color_at(Point::new(0.75, 0.0, 0.0)));
+}
