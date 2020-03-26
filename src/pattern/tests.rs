@@ -74,3 +74,18 @@ fn ring_pattern_test() {
     assert_eq!(Color::black(), p.color_at(Point::new(0.0, 0.0, 1.0)));
     assert_eq!(Color::black(), p.color_at(Point::new(0.708, 0.0, 0.708)));
 }
+
+#[test]
+fn checkers_pattern_test() {
+    let p = Pattern::checkers(Pattern::solid(Color::white()), Pattern::solid(Color::black()));
+
+    assert_eq!(Color::white(), p.color_at(Point::new(0.0, 0.0, 0.0)));
+    assert_eq!(Color::white(), p.color_at(Point::new(0.99, 0.0, 0.0)));
+    assert_eq!(Color::black(), p.color_at(Point::new(1.01, 0.0, 0.0)));
+    assert_eq!(Color::white(), p.color_at(Point::new(0.0, 0.0, 0.0)));
+    assert_eq!(Color::white(), p.color_at(Point::new(0.0, 0.99, 0.0)));
+    assert_eq!(Color::black(), p.color_at(Point::new(0.0, 1.01, 0.0)));
+    assert_eq!(Color::white(), p.color_at(Point::new(0.0, 0.0, 0.0)));
+    assert_eq!(Color::white(), p.color_at(Point::new(0.0, 0.0, 0.99)));
+    assert_eq!(Color::black(), p.color_at(Point::new(0.0, 0.0, 1.01)));
+}

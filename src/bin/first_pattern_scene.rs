@@ -9,14 +9,12 @@ fn main() {
 
     let t = Matrix4x4::identity().scale(13.0, 1.0, 1.0).rotation_y(-PI / 2.0).translate(0.0, 0.0, 10.0);
     let floor_pattern = Pattern::linear_gradient(Color::white(), Color::black()).transform(t);
-    let t = Matrix4x4::identity().scale(1.5, 1.0, 1.0).rotation_y(PI / 2.0);
-    let wall_pattern = Pattern::stripe(Color::new(0.9, 0.1, 0.8), Color::white()).transform(t);
+    let t = Matrix4x4::identity().scale(0.5, 0.5, 0.5).rotation_z(PI / 1.0);
+    let wall_pattern = Pattern::checkers(Pattern::solid(Color::new(0.1, 0.1, 0.5)), Pattern::solid(Color::white())).transform(t);
     let floor_material = Material::new().specular(0.0).pattern(floor_pattern);
     let wall_material = Material::new().specular(0.0).pattern(wall_pattern).diffuse(0.7);
 
-    let floor = Shape::plane().
-        //transform(Matrix4x4::identity().scale(10.0, 0.01, 10.0)).
-        material(floor_material);
+    let floor = Shape::plane().material(floor_material);
 
     let backdrop = Shape::plane().
         transform(Matrix4x4::identity().rotation_x(PI /  2.0).translate(0.0, 0.0, 10.0)).
